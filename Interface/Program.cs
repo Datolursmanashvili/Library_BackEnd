@@ -17,7 +17,6 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 
-// Регистрация Identity - ТОЛЬКО ОДИН РАЗ
 builder.Services.AddIdentity<User, ApplicationRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
@@ -27,7 +26,6 @@ DI.DependecyResolver(builder.Services);
 // Add services to the container.
 builder.Services.AddControllers();
 
-// Добавление Swagger/OpenAPI
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
