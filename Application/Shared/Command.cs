@@ -1,4 +1,6 @@
-﻿using Domain.Entities.RoleEntity.IRepository;
+﻿using Domain.Entities.AuthorEntity.IRepository;
+using Domain.Entities.ProductEntity.IRepository;
+using Domain.Entities.RoleEntity.IRepository;
 using Domain.Entities.UserEntity;
 using Domain.Entities.UserEntity.IRepository;
 using Infrastructure.DB;
@@ -16,6 +18,8 @@ public abstract class Command<T> : ResponseHelper
     protected IServiceProvider ServiceProvider;
     protected IConfiguration Configuration;
     protected IRoleRepository RoleRepository;
+    protected IProductRepository _productRepository;
+    protected IAuthorRepository _authorRepository;
 
     public abstract Task<CommandExecutionResultGeneric<T>> ExecuteAsync();
 
@@ -37,10 +41,11 @@ public abstract class Command<T> : ResponseHelper
             Username = user.Claims.First(i => i.Type == "UserName").Value;
             UserId = user.Claims.First(i => i.Type == "UserId").Value;
         }
+
         userRepository = serviceProvider.GetService<IUserRepository>();
-
+        _productRepository = serviceProvider.GetService<IProductRepository>();
+        _authorRepository = serviceProvider.GetService<IAuthorRepository>();
         _userManager = serviceProvider.GetService<UserManager<User>>();  // Add this line
-
     }
 }
 

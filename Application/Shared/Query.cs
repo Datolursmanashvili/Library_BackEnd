@@ -1,4 +1,6 @@
-﻿using Domain.Entities.UserEntity;
+﻿using Domain.Entities.AuthorEntity.IRepository;
+using Domain.Entities.ProductEntity.IRepository;
+using Domain.Entities.UserEntity;
 using Domain.Entities.UserEntity.IRepository;
 using Infrastructure.DB;
 using Microsoft.AspNetCore.Http;
@@ -14,7 +16,8 @@ public abstract class Query<TQueryResult> where TQueryResult : class
     protected IServiceProvider? ServiceProvider;
     protected UserManager<User> _userManager;
     protected IUserRepository userRepository;
-
+    protected IProductRepository _productRepository;
+    protected IAuthorRepository _authorRepository;
 
     protected string? UserId;
     protected string? Username;
@@ -34,7 +37,8 @@ IServiceProvider serviceProvider)
         ServiceProvider = serviceProvider;
         _userManager = ServiceProvider.GetService<UserManager<User>>();
         userRepository = serviceProvider.GetService<IUserRepository>();
-
+        _productRepository = serviceProvider.GetService<IProductRepository>();
+        _authorRepository = serviceProvider.GetService<IAuthorRepository>();
         if (user.Claims.Any())
         {
             Username = user.Claims.FirstOrDefault(i => i.Type == "UserName").Value;

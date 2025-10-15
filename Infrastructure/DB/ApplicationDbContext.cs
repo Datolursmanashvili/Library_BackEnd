@@ -1,4 +1,6 @@
-﻿using Domain.Entities.RoleEntity;
+﻿using Domain.Entities.AuthorEntity;
+using Domain.Entities.ProductEntity;
+using Domain.Entities.RoleEntity;
 using Domain.Entities.UserEntity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -82,5 +84,8 @@ public class ApplicationDbContext : IdentityDbContext<User, ApplicationRole, str
                RoleId = "2c5e174e-3b0e-446f-86af-483d56fd7210" // ID роли
            });
     }
+
+    public virtual DbSet<Product> Products { get; set; }
+    public virtual DbSet<Author> Authors { get; set; }
 
 }

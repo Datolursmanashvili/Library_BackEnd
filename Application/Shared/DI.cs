@@ -1,9 +1,7 @@
-﻿using Domain.Entities.RoleEntity;
-using Domain.Entities.UserEntity;
+﻿using Domain.Entities.AuthorEntity.IRepository;
+using Domain.Entities.ProductEntity.IRepository;
 using Domain.Entities.UserEntity.IRepository;
-using Infrastructure.DB;
 using Infrastructure.Repositories;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Application.Shared;
@@ -12,13 +10,11 @@ public class DI
 {
     public static void DependecyResolver(IServiceCollection services)
     {
-        //services.AddIdentity<User, ApplicationRole>()
-        //      .AddEntityFrameworkStores<ApplicationDbContext>()
-        //      .AddDefaultTokenProviders();
         services.AddScoped<IQueryExecutor, QueryExecutor>();
         services.AddScoped<ICommandExecutor, CommandExecutor>();
         services.AddScoped<IUserRepository, UserRepository>();
-
+        services.AddScoped<IAuthorRepository, AuthorRepository>();
+        services.AddScoped<IProductRepository, ProductRepository>();
     }
 
 }
