@@ -13,7 +13,6 @@ builder.Services.AddHttpClient();
 builder.Configuration.AddJsonFile("appsettings.json");
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
-// Добавление DbContext с подключением к базе данных
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 
@@ -39,7 +38,6 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
-// Автоматическое создание базы данных и применение миграций
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
@@ -55,7 +53,7 @@ using (var scope = app.Services.CreateScope())
     catch (Exception ex)
     {
         var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "Произошла ошибка при создании или миграции базы данных.");
+        logger.LogError(ex, "An error occurred while creating or migrating the database.");
     }
 }
 
@@ -65,7 +63,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "TemplateBE API v1");
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Library API v1");
         c.RoutePrefix = string.Empty;
     });
 }

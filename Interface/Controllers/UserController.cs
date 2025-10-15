@@ -1,6 +1,7 @@
 ﻿using Application.Commands.UserCommands;
 using Application.Queries.UserQuery;
 using Application.Shared;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shared;
 using static Application.Queries.UserQuery.LoginQuery;
@@ -30,7 +31,7 @@ public class UserController : ControllerBase
     public async Task<QueryExecutionResult<LoginQueryResult>> Login([FromQuery] LoginQuery query) =>
      await _queryExecutor.Execute<LoginQuery, LoginQueryResult>(query);
 
-
+    [Authorize(Roles = UserGroups.All)]
     [Route("GetAllUser")]
     [HttpGet]
     public async Task<QueryExecutionResult<GetAllUserQueryResult>> GetAllUser([FromQuery] GetAllUserQuery query) =>
