@@ -8,7 +8,6 @@ using static Application.Queries.UserQuery.LoginQuery;
 
 namespace Interface.Controllers;
 
-//[Authorize]
 [ApiController]
 [Route("[controller]")]
 public class UserController : ControllerBase
@@ -31,7 +30,7 @@ public class UserController : ControllerBase
     public async Task<QueryExecutionResult<LoginQueryResult>> Login([FromQuery] LoginQuery query) =>
      await _queryExecutor.Execute<LoginQuery, LoginQueryResult>(query);
 
-    [Authorize(Roles = UserGroups.All)]
+    [Authorize(Roles = UserGroups.Admin)]
     [Route("GetAllUser")]
     [HttpGet]
     public async Task<QueryExecutionResult<GetAllUserQueryResult>> GetAllUser([FromQuery] GetAllUserQuery query) =>

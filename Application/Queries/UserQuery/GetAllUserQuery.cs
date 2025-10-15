@@ -17,7 +17,6 @@ namespace Application.Queries.UserQuery
             {
                 Id = x.Id,
                 Email = x.Email,
-                //IsActive = x.IsActive,
                 FirstName = x.FirstName,
                 LastName = x.LastName,
                 PNumber = userRepository.Decrypt(x.PNumber),
