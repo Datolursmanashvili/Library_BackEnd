@@ -1,4 +1,5 @@
 ﻿using Domain.Entities.AuthorEntity;
+using Domain.Entities.BookAuthorEntity;
 using Domain.Entities.ProductEntity;
 using Domain.Entities.RoleEntity;
 using Domain.Entities.UserEntity;
@@ -18,15 +19,18 @@ public class ApplicationDbContext : IdentityDbContext<User, ApplicationRole, str
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        base.OnModelCreating(modelBuilder);
         var permission = new List<Permissions>();
 
-        // Указываем EF игнорировать ненужные таблицы
+        modelBuilder.Entity<User>().ToTable("AppUsers");
+        modelBuilder.Entity<ApplicationRole>().ToTable("AspRoles");
+        modelBuilder.Entity<IdentityUserRole<string>>().ToTable("AspUserRoles");
+
         modelBuilder.Ignore<IdentityUserLogin<string>>();
         modelBuilder.Ignore<IdentityUserToken<string>>();
         modelBuilder.Ignore<IdentityUserClaim<string>>();
         modelBuilder.Ignore<IdentityRoleClaim<string>>();
 
-        // При необходимости можно настроить оставшиеся таблицы
         modelBuilder.Entity<IdentityUserRole<string>>(entity =>
         {
             entity.HasKey(e => new { e.UserId, e.RoleId });
@@ -87,5 +91,6 @@ public class ApplicationDbContext : IdentityDbContext<User, ApplicationRole, str
 
     public virtual DbSet<Product> Products { get; set; }
     public virtual DbSet<Author> Authors { get; set; }
+    public virtual DbSet<BookAuthor> BookAuthors { get; set; }
 
 }

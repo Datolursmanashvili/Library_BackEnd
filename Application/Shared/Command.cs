@@ -1,4 +1,5 @@
 ﻿using Domain.Entities.AuthorEntity.IRepository;
+using Domain.Entities.BookAuthorEntity.IRepository;
 using Domain.Entities.ProductEntity.IRepository;
 using Domain.Entities.RoleEntity.IRepository;
 using Domain.Entities.UserEntity;
@@ -20,6 +21,7 @@ public abstract class Command<T> : ResponseHelper
     protected IRoleRepository RoleRepository;
     protected IProductRepository _productRepository;
     protected IAuthorRepository _authorRepository;
+    protected IBookAuthorRepository _bookAuthorRepository;
 
     public abstract Task<CommandExecutionResultGeneric<T>> ExecuteAsync();
 
@@ -45,6 +47,7 @@ public abstract class Command<T> : ResponseHelper
         userRepository = serviceProvider.GetService<IUserRepository>();
         _productRepository = serviceProvider.GetService<IProductRepository>();
         _authorRepository = serviceProvider.GetService<IAuthorRepository>();
+        _bookAuthorRepository = serviceProvider.GetService<IBookAuthorRepository>();
         _userManager = serviceProvider.GetService<UserManager<User>>();  // Add this line
     }
 }

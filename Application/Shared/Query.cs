@@ -1,4 +1,5 @@
 ﻿using Domain.Entities.AuthorEntity.IRepository;
+using Domain.Entities.BookAuthorEntity.IRepository;
 using Domain.Entities.ProductEntity.IRepository;
 using Domain.Entities.UserEntity;
 using Domain.Entities.UserEntity.IRepository;
@@ -18,6 +19,7 @@ public abstract class Query<TQueryResult> where TQueryResult : class
     protected IUserRepository userRepository;
     protected IProductRepository _productRepository;
     protected IAuthorRepository _authorRepository;
+    protected IBookAuthorRepository _bookAuthorRepository;
 
     protected string? UserId;
     protected string? Username;
@@ -39,6 +41,8 @@ IServiceProvider serviceProvider)
         userRepository = serviceProvider.GetService<IUserRepository>();
         _productRepository = serviceProvider.GetService<IProductRepository>();
         _authorRepository = serviceProvider.GetService<IAuthorRepository>();
+        _bookAuthorRepository = serviceProvider.GetService<IBookAuthorRepository>();
+
         if (user.Claims.Any())
         {
             Username = user.Claims.FirstOrDefault(i => i.Type == "UserName").Value;

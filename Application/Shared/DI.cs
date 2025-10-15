@@ -1,4 +1,5 @@
 ﻿using Domain.Entities.AuthorEntity.IRepository;
+using Domain.Entities.BookAuthorEntity.IRepository;
 using Domain.Entities.ProductEntity.IRepository;
 using Domain.Entities.UserEntity.IRepository;
 using Infrastructure.Repositories;
@@ -15,6 +16,6 @@ public class DI
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IAuthorRepository, AuthorRepository>();
         services.AddScoped<IProductRepository, ProductRepository>();
+        services.AddScoped<IBookAuthorRepository, BookAuthorRepository>();
     }
-
 }
