@@ -14,10 +14,10 @@ public class AddProductCommand : Command<ProductCommandResult>
     public DateTime ReleaseDate { get; set; }
     public int PublisherId { get; set; }
 
-    // Execute
+    public int PageCount { get; set; }
+    public string Address { get; set; }
     public override async Task<CommandExecutionResultGeneric<ProductCommandResult>> ExecuteAsync()
     {
-        // Валидируем команду
         var validator = new AddProductCommandValidator();
         var validationResult = await validator.ValidateAsync(this);
 
@@ -32,6 +32,8 @@ public class AddProductCommand : Command<ProductCommandResult>
             Annotation = Annotation,
             ProductType = ProductType,
             ISBN = ISBN,
+            Address = Address,
+            PageCount = PageCount,
             ReleaseDate = ReleaseDate,
             PublisherId = PublisherId,
             CreatedAt = DateTime.Now,
@@ -97,4 +99,6 @@ public class ProductCommandResult
     public string ISBN { get; set; }
     public DateTime ReleaseDate { get; set; }
     public int PublisherId { get; set; }
+    public int PageCount { get; set; }
+    public string Address { get; set; }
 }

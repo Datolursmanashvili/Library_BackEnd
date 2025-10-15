@@ -17,7 +17,8 @@ public class AddAuthorCommand : Command<AuthorCommandResult>
     public int CityId { get; set; }
     public string PhoneNumber { get; set; }
     public string Email { get; set; }
-
+    public int PageCount { get; set; }
+    public string Address { get; set; }
     public override async Task<CommandExecutionResultGeneric<AuthorCommandResult>> ExecuteAsync()
     {
         // Валидируем команду

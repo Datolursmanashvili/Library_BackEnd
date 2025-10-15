@@ -25,7 +25,9 @@ namespace Application.Queries.ProductQueries
                     ProductType = p.ProductType,
                     ISBN = p.ISBN,
                     ReleaseDate = p.ReleaseDate,
-                    PublisherId = p.PublisherId
+                    PublisherId = p.PublisherId,
+                    Address = p.Address,
+                    PageCount = p.PageCount,
                 })
                 .ToList();
 
@@ -48,6 +50,8 @@ namespace Application.Queries.ProductQueries
         public string ISBN { get; set; }
         public DateTime ReleaseDate { get; set; }
         public int PublisherId { get; set; }
+        public int PageCount { get; set; }
+        public string Address { get; set; }
     }
 
     public class GetAllProductsQueryResult

@@ -13,7 +13,8 @@ public class UpdateProductCommand : Command<ProductCommandResult>
     public string ISBN { get; set; }
     public DateTime ReleaseDate { get; set; }
     public int PublisherId { get; set; }
-
+    public int PageCount { get; set; }
+    public string Address { get; set; }
     public override async Task<CommandExecutionResultGeneric<ProductCommandResult>> ExecuteAsync()
     {
         var validator = new UpdateProductCommandValidator();
@@ -34,6 +35,8 @@ public class UpdateProductCommand : Command<ProductCommandResult>
         product.ISBN = ISBN;
         product.ReleaseDate = ReleaseDate;
         product.PublisherId = PublisherId;
+        product.PageCount = PageCount;
+        product.Address = Address;
 
         var result = await _productRepository.UpdateAsync(product);
         if (!result.Success)
@@ -47,7 +50,9 @@ public class UpdateProductCommand : Command<ProductCommandResult>
             ProductType = product.ProductType,
             ISBN = product.ISBN,
             ReleaseDate = product.ReleaseDate,
-            PublisherId = product.PublisherId
+            PublisherId = product.PublisherId,
+            PageCount = product.PageCount,
+            Address = product.Address,
         });
     }
 

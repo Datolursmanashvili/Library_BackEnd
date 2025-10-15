@@ -21,7 +21,9 @@ namespace Application.Queries.ProductQueries
                 ProductType = product.ProductType,
                 ISBN = product.ISBN,
                 ReleaseDate = product.ReleaseDate,
-                PublisherId = product.PublisherId
+                PublisherId = product.PublisherId,
+                PageCount = product.PageCount,
+                Address = product.Address,
             };
 
             return await Ok(result);

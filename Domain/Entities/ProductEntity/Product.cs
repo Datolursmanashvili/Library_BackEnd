@@ -27,4 +27,12 @@ public class Product : BaseEntity<int>
 
     [Required]
     public int PublisherId { get; set; }  // გამომცემლობა (foreign key)
+
+    [Required]
+    [Range(1, int.MaxValue, ErrorMessage = "გვერდების რაოდენობა უნდა იყოს მინიმუმ 1.")]
+    public int PageCount { get; set; }  // გვერდების რაოდენობა
+
+    [Required]
+    [StringLength(500)]
+    public string Address { get; set; }  // მისამართი (წიგნის შემთხვევაში ფიზ. მისამართი ბიბლიოთეკაში, სტატიის ან ელ. რესურსის შემთხვევაში URL)
 }
