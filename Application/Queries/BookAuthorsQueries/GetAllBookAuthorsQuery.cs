@@ -1,7 +1,5 @@
 ﻿using Application.Shared;
-using Domain.Entities.BookAuthorEntity;
 using Shared;
-using static Application.Queries.BookAuthorQueries.GetAllBookAuthorsQuery;
 
 namespace Application.Queries.BookAuthorQueries;
 
@@ -20,11 +18,11 @@ public class GetAllBookAuthorsQuery : Query<List<BookAuthorQueryResult>>
 
         return await Ok(result);
     }
+}
 
-    public class BookAuthorQueryResult
-    {
-        public int Id { get; set; }
-        public int ProductId { get; set; }
-        public int AuthorId { get; set; }
-    }
+public class BookAuthorQueryResult
+{
+    public int Id { get; set; }
+    public int ProductId { get; set; }
+    public int AuthorId { get; set; }
 }

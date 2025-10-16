@@ -43,7 +43,6 @@ public class AddAuthorCommand : Command<AuthorCommandResult>
         if (!result.Success)
             return await Fail<AuthorCommandResult>(result.ErrorMessage);
 
-        // Возвращаем DTO
         return await Ok(new AuthorCommandResult
         {
             Id = Convert.ToInt32(result.ResultId),
@@ -59,10 +58,6 @@ public class AddAuthorCommand : Command<AuthorCommandResult>
         });
     }
 
-    // DTO
-
-
-    // Validator
     public class AddAuthorCommandValidator : AbstractValidator<AddAuthorCommand>
     {
         public AddAuthorCommandValidator()

@@ -37,7 +37,7 @@ public class AuthorRepository : BaseRepository, IAuthorRepository
     // READ BY ID
     public async Task<Author?> GetByIdAsync(int id)
     {
-        return await _ApplicationDbContext.Authors.FirstOrDefaultAsync(a => a.Id == id);
+        return await _ApplicationDbContext.Authors.FirstOrDefaultAsync(a => a.Id == id && a.IsDeleted == false);
     }
 
     // UPDATE

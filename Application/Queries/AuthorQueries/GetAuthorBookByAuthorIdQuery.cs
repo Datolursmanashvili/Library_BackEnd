@@ -3,7 +3,7 @@ using Shared;
 
 namespace Application.Queries.AuthorQueries
 {
-    public class GetAuthorByIdQuery : Query<AuthorQueryResultItem>
+    public class GetAuthorBookByAuthorIdQuery : Query<AuthorQueryResultItem>
     {
         public int Id { get; set; }
 

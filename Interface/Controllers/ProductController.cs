@@ -50,27 +50,27 @@ namespace Interface.Controllers
         public async Task<CommandExecutionResultGeneric<ProductCommandResult>> UpdateProduct([FromBody] UpdateProductCommand command) =>
             await _commandExecutor.Execute(command);
 
-        [Route("DeleteProduct/{id}")]
-        [HttpDelete]
-        [Authorize(Roles = UserGroups.Admin)]
-        public async Task<CommandExecutionResult> DeleteProduct([FromRoute] int id)
-        {
-            var command = new DeleteProductCommand { Id = id };
-            var result = await _commandExecutor.Execute(command);
+        //[Route("DeleteProduct/{id}")]
+        //[HttpDelete]
+        //[Authorize(Roles = UserGroups.Admin)]
+        //public async Task<CommandExecutionResult> DeleteProduct([FromRoute] int id)
+        //{
+        //    var command = new DeleteProductCommand { Id = id };
+        //    var result = await _commandExecutor.Execute(command);
 
-            if (result.Success)
-            {
-                return new CommandExecutionResult { Success = true };
-            }
-            else
-            {
-                return new CommandExecutionResult
-                {
-                    Success = false,
-                    ErrorMessage = "პროდუქტის წაშლა ვერ განხორციელდა"
-                };
-            }
-        }
+        //    if (result.Success)
+        //    {
+        //        return new CommandExecutionResult { Success = true };
+        //    }
+        //    else
+        //    {
+        //        return new CommandExecutionResult
+        //        {
+        //            Success = false,
+        //            ErrorMessage = "პროდუქტის წაშლა ვერ განხორციელდა"
+        //        };
+        //    }
+        //}
 
         #endregion
     }

@@ -1,19 +1,52 @@
 ﻿using Application.Shared;
+using Microsoft.EntityFrameworkCore;
 using Shared;
 
 namespace Application.Queries.AuthorQueries;
 
-public class GetAllAuthorsQuery : Query<GetAllAuthorsQueryResult>
+public class GetAllAuthorsByFiltresQuery : Query<GetAllAuthorsQueryResult>
 {
     public int PageSize { get; set; } = 10;
     public int Page { get; set; } = 0;
-
+    public string? FirstName { get; set; }
+    public string? LastName { get; set; }
+    public string? Gender { get; set; }
+    public int? CountryId { get; set; }
+    public int? CityId { get; set; }
+    public string? PersonalNumber { get; set; }
+    public string? PhoneNumber { get; set; }
+    public string? Email { get; set; }
     public override async Task<QueryExecutionResult<GetAllAuthorsQueryResult>> Execute()
     {
-        var authors = _appContext.Authors.AsQueryable().Where(a => !a.IsDeleted);
-        var totalCount = authors.Count();
+        var query = _appContext.Authors.Where(a => !a.IsDeleted).AsNoTracking();
 
-        var result = authors
+        if (!string.IsNullOrEmpty(FirstName))
+            query = query.Where(a => a.FirstName.Contains(FirstName));
+
+        if (!string.IsNullOrEmpty(LastName))
+            query = query.Where(a => a.LastName.Contains(LastName));
+
+        if (!string.IsNullOrEmpty(Gender))
+            query = query.Where(a => a.Gender == Gender);
+
+        if (CountryId.HasValue)
+            query = query.Where(a => a.CountryId == CountryId.Value);
+
+        if (CityId.HasValue)
+            query = query.Where(a => a.CityId == CityId.Value);
+
+        if (!string.IsNullOrEmpty(PersonalNumber))
+            query = query.Where(a => a.PersonalNumber.Contains(PersonalNumber));
+
+        if (!string.IsNullOrEmpty(PhoneNumber))
+            query = query.Where(a => a.PhoneNumber.Contains(PhoneNumber));
+
+        if (!string.IsNullOrEmpty(Email))
+            query = query.Where(a => a.Email.Contains(Email));
+
+        var totalCount = await query.CountAsync();
+
+        var result = query
             .OrderBy(a => a.Id)
             .Skip(Page * PageSize)
             .Take(PageSize)

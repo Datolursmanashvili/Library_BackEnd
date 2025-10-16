@@ -25,17 +25,15 @@ public class BookAuthorController : ControllerBase
     [Route("GetAll")]
     [HttpGet]
     [Authorize(Roles = UserGroups.Admin)]
-    public async Task<QueryExecutionResult<List<GetAllBookAuthorsQuery.BookAuthorQueryResult>>> GetAll() =>
-        await _queryExecutor.Execute<GetAllBookAuthorsQuery, List<GetAllBookAuthorsQuery.BookAuthorQueryResult>>(new GetAllBookAuthorsQuery());
-
+    public async Task<QueryExecutionResult<List<BookAuthorQueryResult>>> GetAll() =>
+        await _queryExecutor.Execute<GetAllBookAuthorsQuery, List<BookAuthorQueryResult>>(new GetAllBookAuthorsQuery());
     #endregion
 
     #region Commands
-
     [Route("Add")]
     [HttpPost]
     [Authorize(Roles = UserGroups.Admin)]
-    public async Task<CommandExecutionResultGeneric<AddBookAuthorCommand.BookAuthorCommandResult>> Add([FromBody] AddBookAuthorCommand command) =>
+    public async Task<CommandExecutionResultGeneric<BookAuthorCommandResult>> Add([FromBody] AddBookAuthorCommand command) =>
         await _commandExecutor.Execute(command);
 
     [Route("Delete/{id}")]
