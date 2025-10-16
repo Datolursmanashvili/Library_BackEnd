@@ -1,10 +1,13 @@
 ﻿using Application.Shared;
 using FluentValidation;
+using FluentValidation.Attributes;
 using Shared;
 using static Application.Commands.AuthorCommands.AddAuthorCommand;
 
 namespace Application.Commands.AuthorCommands;
 
+
+[Validator(typeof(UpdateAuthorCommandValidator))]
 public class UpdateAuthorCommand : Command<AuthorCommandResult>
 {
     public int Id { get; set; }
@@ -18,7 +21,7 @@ public class UpdateAuthorCommand : Command<AuthorCommandResult>
     public string PhoneNumber { get; set; }
     public string Email { get; set; }
 
-    public override async Task<CommandExecutionResultGeneric<AuthorCommandResult>> ExecuteAsync()
+    public override async Task<CommandExecutionResultGeneric<AuthorCommandResult>> ExecuteCommandLogicAsync()
     {
         var validator = new UpdateAuthorCommandValidator();
         var validationResult = await validator.ValidateAsync(this);

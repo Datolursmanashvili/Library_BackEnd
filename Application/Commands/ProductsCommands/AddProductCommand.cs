@@ -1,10 +1,13 @@
 ﻿using Application.Shared;
 using Domain.Entities.ProductEntity;
 using FluentValidation;
+using FluentValidation.Attributes;
 using Shared;
 
 namespace Application.Commands.ProductsCommands;
 
+
+[Validator(typeof(AddProductCommandValidator))]
 public class AddProductCommand : Command<ProductCommandResult>
 {
     public string Name { get; set; }
@@ -13,19 +16,10 @@ public class AddProductCommand : Command<ProductCommandResult>
     public string ISBN { get; set; }
     public DateTime ReleaseDate { get; set; }
     public int PublisherId { get; set; }
-
     public int PageCount { get; set; }
     public string Address { get; set; }
-    public override async Task<CommandExecutionResultGeneric<ProductCommandResult>> ExecuteAsync()
-    {
-        var validator = new AddProductCommandValidator();
-        var validationResult = await validator.ValidateAsync(this);
-
-        if (!validationResult.IsValid)
-            return await Fail<ProductCommandResult>(
-                string.Join("; ", validationResult.Errors.Select(e => e.ErrorMessage))
-            );
-
+    public override async Task<CommandExecutionResultGeneric<ProductCommandResult>> ExecuteCommandLogicAsync()
+    {   
         var product = new Product
         {
             Name = Name,

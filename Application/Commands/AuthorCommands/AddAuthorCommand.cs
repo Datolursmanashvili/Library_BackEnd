@@ -21,17 +21,9 @@ public class AddAuthorCommand : Command<AuthorCommandResult>
     public string Email { get; set; }
     public int PageCount { get; set; }
     public string Address { get; set; }
-    public override async Task<CommandExecutionResultGeneric<AuthorCommandResult>> ExecuteAsync()
+    public override async Task<CommandExecutionResultGeneric<AuthorCommandResult>> ExecuteCommandLogicAsync()
     {
-        //var validator = new AddAuthorCommandValidator();
-        //var validationResult = await validator.ValidateAsync(this);
-
-        //if (!validationResult.IsValid)
-        //    return await Fail<AuthorCommandResult>(
-        //        string.Join("; ", validationResult.Errors.Select(e => e.ErrorMessage))
-        //    );
-
-        // Создаем автора
+       
         var author = new Author
         {
             FirstName = FirstName,

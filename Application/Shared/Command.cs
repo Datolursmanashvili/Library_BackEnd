@@ -25,7 +25,7 @@ public abstract class Command<T> : ResponseHelper
     protected IAuthorRepository _authorRepository;
     protected IBookAuthorRepository _bookAuthorRepository;
 
-    public abstract Task<CommandExecutionResultGeneric<T>> ExecuteAsync();
+    public abstract Task<CommandExecutionResultGeneric<T>> ExecuteCommandLogicAsync();
 
     protected IUserRepository userRepository;
     protected UserManager<User> _userManager;
@@ -33,8 +33,10 @@ public abstract class Command<T> : ResponseHelper
     protected string? UserId;
     protected string? Username;
 
-    protected async Task<CommandExecutionResultGeneric<T>> ValidateCommandAsync()
+    // ✅ Публичный метод с автоматической валидацией
+    public async Task<CommandExecutionResultGeneric<T>> ExecuteAsync()
     {
+        // Автоматическая валидация через атрибут [Validator]
         var validatorAttribute = (ValidatorAttribute)Attribute.GetCustomAttribute(
             this.GetType(), typeof(ValidatorAttribute));
 
@@ -57,7 +59,8 @@ public abstract class Command<T> : ResponseHelper
             }
         }
 
-        return null; // валидация прошла успешно
+        // Вызов бизнес-логики
+        return await ExecuteCommandLogicAsync();
     }
 
     public void Resolve(ApplicationDbContext applicationContext, IServiceProvider serviceProvider, IConfiguration configuration)

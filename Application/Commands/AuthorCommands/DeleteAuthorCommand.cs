@@ -7,7 +7,7 @@ public class DeleteAuthorCommand : Command<bool>
 {
     public int Id { get; set; }
 
-    public override async Task<CommandExecutionResultGeneric<bool>> ExecuteAsync()
+    public override async Task<CommandExecutionResultGeneric<bool>> ExecuteCommandLogicAsync()
     {
         if (Id <= 0)
             return await Fail<bool>("ავტორის Id არასწორია");

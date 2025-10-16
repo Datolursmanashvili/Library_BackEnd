@@ -6,7 +6,7 @@ public class DeleteProductCommand : Command<bool>
 {
     public int Id { get; set; }
 
-    public override async Task<CommandExecutionResultGeneric<bool>> ExecuteAsync()
+    public override async Task<CommandExecutionResultGeneric<bool>> ExecuteCommandLogicAsync()
     {
         if (Id <= 0)
             return await Fail<bool>("პროდუქტის Id არასწორია");

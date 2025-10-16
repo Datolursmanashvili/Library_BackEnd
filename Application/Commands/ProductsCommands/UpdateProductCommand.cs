@@ -1,9 +1,12 @@
 ﻿using Application.Shared;
 using FluentValidation;
+using FluentValidation.Attributes;
 using Shared;
 
 namespace Application.Commands.ProductsCommands;
 
+
+[Validator(typeof(UpdateProductCommandValidator))]
 public class UpdateProductCommand : Command<ProductCommandResult>
 {
     public int Id { get; set; }
@@ -15,16 +18,8 @@ public class UpdateProductCommand : Command<ProductCommandResult>
     public int PublisherId { get; set; }
     public int PageCount { get; set; }
     public string Address { get; set; }
-    public override async Task<CommandExecutionResultGeneric<ProductCommandResult>> ExecuteAsync()
+    public override async Task<CommandExecutionResultGeneric<ProductCommandResult>> ExecuteCommandLogicAsync()
     {
-        var validator = new UpdateProductCommandValidator();
-        var validationResult = await validator.ValidateAsync(this);
-
-        if (!validationResult.IsValid)
-            return await Fail<ProductCommandResult>(
-                string.Join("; ", validationResult.Errors.Select(e => e.ErrorMessage))
-            );
-
         var product = await _productRepository.GetByIdAsync(Id);
         if (product == null)
             return await Fail<ProductCommandResult>("პროდუქტი ვერ მოიძებნა");

@@ -15,7 +15,7 @@ public class RegistrationCommand : Command<UserCommandResult>
     public int DepartmentId { get; set; }
     public DateTime BirthDate { get; set; }
 
-    public override async Task<CommandExecutionResultGeneric<UserCommandResult>> ExecuteAsync()
+    public override async Task<CommandExecutionResultGeneric<UserCommandResult>> ExecuteCommandLogicAsync()
     {
         if (!PasswordHelper.IsValidEmail(Email))
         {

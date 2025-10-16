@@ -10,7 +10,7 @@ public class AddBookAuthorCommand : Command<BookAuthorCommandResult>
     public int ProductId { get; set; }
     public int AuthorId { get; set; }
 
-    public override async Task<CommandExecutionResultGeneric<BookAuthorCommandResult>> ExecuteAsync()
+    public override async Task<CommandExecutionResultGeneric<BookAuthorCommandResult>> ExecuteCommandLogicAsync()
     {
         if (ProductId <= 0 || AuthorId <= 0)
             return await Fail<BookAuthorCommandResult>("პროდუქტი და ავტორი სავალდებულოა");
