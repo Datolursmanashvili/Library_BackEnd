@@ -3,7 +3,6 @@ using Domain.Entities.AuthorEntity;
 using FluentValidation;
 using FluentValidation.Attributes;
 using Shared;
-using static Application.Commands.AuthorCommands.AddAuthorCommand;
 
 namespace Application.Commands.AuthorCommands;
 
@@ -23,7 +22,7 @@ public class AddAuthorCommand : Command<AuthorCommandResult>
     public string Address { get; set; }
     public override async Task<CommandExecutionResultGeneric<AuthorCommandResult>> ExecuteCommandLogicAsync()
     {
-       
+
         var author = new Author
         {
             FirstName = FirstName,
@@ -61,19 +60,7 @@ public class AddAuthorCommand : Command<AuthorCommandResult>
     }
 
     // DTO
-    public class AuthorCommandResult
-    {
-        public int Id { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string Gender { get; set; }
-        public string PersonalNumber { get; set; }
-        public DateTime BirthDate { get; set; }
-        public int CountryId { get; set; }
-        public int CityId { get; set; }
-        public string PhoneNumber { get; set; }
-        public string Email { get; set; }
-    }
+
 
     // Validator
     public class AddAuthorCommandValidator : AbstractValidator<AddAuthorCommand>
@@ -122,4 +109,18 @@ public class AddAuthorCommand : Command<AuthorCommandResult>
                 .EmailAddress().WithMessage("მეილის ფორმატი არასწორია");
         }
     }
+}
+
+public class AuthorCommandResult
+{
+    public int Id { get; set; }
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+    public string Gender { get; set; }
+    public string PersonalNumber { get; set; }
+    public DateTime BirthDate { get; set; }
+    public int CountryId { get; set; }
+    public int CityId { get; set; }
+    public string PhoneNumber { get; set; }
+    public string Email { get; set; }
 }

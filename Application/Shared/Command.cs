@@ -33,10 +33,8 @@ public abstract class Command<T> : ResponseHelper
     protected string? UserId;
     protected string? Username;
 
-    // ✅ Публичный метод с автоматической валидацией
     public async Task<CommandExecutionResultGeneric<T>> ExecuteAsync()
     {
-        // Автоматическая валидация через атрибут [Validator]
         var validatorAttribute = (ValidatorAttribute)Attribute.GetCustomAttribute(
             this.GetType(), typeof(ValidatorAttribute));
 
@@ -59,7 +57,6 @@ public abstract class Command<T> : ResponseHelper
             }
         }
 
-        // Вызов бизнес-логики
         return await ExecuteCommandLogicAsync();
     }
 

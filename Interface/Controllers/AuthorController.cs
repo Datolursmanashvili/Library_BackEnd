@@ -4,7 +4,6 @@ using Application.Shared;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shared;
-using static Application.Commands.AuthorCommands.AddAuthorCommand;
 
 namespace Interface.Controllers
 {
@@ -41,7 +40,7 @@ namespace Interface.Controllers
 
         [Route("AddAuthor")]
         [HttpPost]
-        //[Authorize(Roles = UserGroups.Admin)]
+        [Authorize(Roles = UserGroups.Admin)]
         public async Task<CommandExecutionResultGeneric<AuthorCommandResult>> AddAuthor([FromBody] AddAuthorCommand command) =>
             await _commandExecutor.Execute(command);
 
@@ -58,7 +57,6 @@ namespace Interface.Controllers
             var command = new DeleteAuthorCommand { Id = id };
             var result = await _commandExecutor.Execute(command);
 
-            // სწორად ვამოწმებთ result-ის წარმატებას
             if (result.Success)
             {
                 return new CommandExecutionResult

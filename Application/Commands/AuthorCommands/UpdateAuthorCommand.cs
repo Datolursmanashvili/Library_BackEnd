@@ -2,7 +2,6 @@
 using FluentValidation;
 using FluentValidation.Attributes;
 using Shared;
-using static Application.Commands.AuthorCommands.AddAuthorCommand;
 
 namespace Application.Commands.AuthorCommands;
 
