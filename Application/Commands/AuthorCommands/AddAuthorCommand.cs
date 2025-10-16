@@ -1,11 +1,13 @@
 ﻿using Application.Shared;
 using Domain.Entities.AuthorEntity;
 using FluentValidation;
+using FluentValidation.Attributes;
 using Shared;
 using static Application.Commands.AuthorCommands.AddAuthorCommand;
 
 namespace Application.Commands.AuthorCommands;
 
+[Validator(typeof(AddAuthorCommandValidator))]
 public class AddAuthorCommand : Command<AuthorCommandResult>
 {
     public string FirstName { get; set; }
@@ -21,14 +23,13 @@ public class AddAuthorCommand : Command<AuthorCommandResult>
     public string Address { get; set; }
     public override async Task<CommandExecutionResultGeneric<AuthorCommandResult>> ExecuteAsync()
     {
-        // Валидируем команду
-        var validator = new AddAuthorCommandValidator();
-        var validationResult = await validator.ValidateAsync(this);
+        //var validator = new AddAuthorCommandValidator();
+        //var validationResult = await validator.ValidateAsync(this);
 
-        if (!validationResult.IsValid)
-            return await Fail<AuthorCommandResult>(
-                string.Join("; ", validationResult.Errors.Select(e => e.ErrorMessage))
-            );
+        //if (!validationResult.IsValid)
+        //    return await Fail<AuthorCommandResult>(
+        //        string.Join("; ", validationResult.Errors.Select(e => e.ErrorMessage))
+        //    );
 
         // Создаем автора
         var author = new Author
@@ -47,6 +48,7 @@ public class AddAuthorCommand : Command<AuthorCommandResult>
         };
 
         var result = await _authorRepository.CreateAsync(author);
+
         if (!result.Success)
             return await Fail<AuthorCommandResult>(result.ErrorMessage);
 

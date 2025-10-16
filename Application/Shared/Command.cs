@@ -4,6 +4,8 @@ using Domain.Entities.ProductEntity.IRepository;
 using Domain.Entities.RoleEntity.IRepository;
 using Domain.Entities.UserEntity;
 using Domain.Entities.UserEntity.IRepository;
+using FluentValidation;
+using FluentValidation.Attributes;
 using Infrastructure.DB;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -30,6 +32,34 @@ public abstract class Command<T> : ResponseHelper
 
     protected string? UserId;
     protected string? Username;
+
+    protected async Task<CommandExecutionResultGeneric<T>> ValidateCommandAsync()
+    {
+        var validatorAttribute = (ValidatorAttribute)Attribute.GetCustomAttribute(
+            this.GetType(), typeof(ValidatorAttribute));
+
+        if (validatorAttribute?.ValidatorType != null)
+        {
+            var validatorInstance = Activator.CreateInstance(validatorAttribute.ValidatorType);
+
+            if (validatorInstance is IValidator validator)
+            {
+                var validationResult = await validator.ValidateAsync(
+                    new ValidationContext<object>(this)
+                );
+
+                if (!validationResult.IsValid)
+                {
+                    return await Fail<T>(
+                        string.Join("; ", validationResult.Errors.Select(e => e.ErrorMessage))
+                    );
+                }
+            }
+        }
+
+        return null; // валидация прошла успешно
+    }
+
     public void Resolve(ApplicationDbContext applicationContext, IServiceProvider serviceProvider, IConfiguration configuration)
     {
         ServiceProvider = serviceProvider;
@@ -49,7 +79,9 @@ public abstract class Command<T> : ResponseHelper
         _authorRepository = serviceProvider.GetService<IAuthorRepository>();
         _bookAuthorRepository = serviceProvider.GetService<IBookAuthorRepository>();
         _userManager = serviceProvider.GetService<UserManager<User>>();  // Add this line
+
     }
+
 }
 
 // Keep the original non-generic Command for backward compatibility

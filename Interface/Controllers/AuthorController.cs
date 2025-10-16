@@ -41,7 +41,7 @@ namespace Interface.Controllers
 
         [Route("AddAuthor")]
         [HttpPost]
-        [Authorize(Roles = UserGroups.Admin)]
+        //[Authorize(Roles = UserGroups.Admin)]
         public async Task<CommandExecutionResultGeneric<AuthorCommandResult>> AddAuthor([FromBody] AddAuthorCommand command) =>
             await _commandExecutor.Execute(command);
 

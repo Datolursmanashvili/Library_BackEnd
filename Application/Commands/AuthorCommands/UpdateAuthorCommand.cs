@@ -1,10 +1,11 @@
 ﻿using Application.Shared;
 using FluentValidation;
 using Shared;
+using static Application.Commands.AuthorCommands.AddAuthorCommand;
 
 namespace Application.Commands.AuthorCommands;
 
-public class UpdateAuthorCommand : Command<AddAuthorCommand.AuthorCommandResult>
+public class UpdateAuthorCommand : Command<AuthorCommandResult>
 {
     public int Id { get; set; }
     public string FirstName { get; set; }
@@ -17,19 +18,19 @@ public class UpdateAuthorCommand : Command<AddAuthorCommand.AuthorCommandResult>
     public string PhoneNumber { get; set; }
     public string Email { get; set; }
 
-    public override async Task<CommandExecutionResultGeneric<AddAuthorCommand.AuthorCommandResult>> ExecuteAsync()
+    public override async Task<CommandExecutionResultGeneric<AuthorCommandResult>> ExecuteAsync()
     {
         var validator = new UpdateAuthorCommandValidator();
         var validationResult = await validator.ValidateAsync(this);
 
         if (!validationResult.IsValid)
-            return await Fail<AddAuthorCommand.AuthorCommandResult>(
+            return await Fail<AuthorCommandResult>(
                 string.Join("; ", validationResult.Errors.Select(e => e.ErrorMessage))
             );
 
         var author = await _authorRepository.GetByIdAsync(Id);
         if (author == null)
-            return await Fail<AddAuthorCommand.AuthorCommandResult>("ავტორი ვერ მოიძებნა");
+            return await Fail<AuthorCommandResult>("ავტორი ვერ მოიძებნა");
 
         author.FirstName = FirstName;
         author.LastName = LastName;
@@ -43,9 +44,9 @@ public class UpdateAuthorCommand : Command<AddAuthorCommand.AuthorCommandResult>
 
         var result = await _authorRepository.UpdateAsync(author);
         if (!result.Success)
-            return await Fail<AddAuthorCommand.AuthorCommandResult>(result.ErrorMessage);
+            return await Fail<AuthorCommandResult>(result.ErrorMessage);
 
-        return await Ok(new AddAuthorCommand.AuthorCommandResult
+        return await Ok(new AuthorCommandResult
         {
             Id = author.Id,
             FirstName = author.FirstName,
