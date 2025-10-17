@@ -20,6 +20,10 @@ public class GetAllAuthorsByFiltresQuery : Query<GetAllAuthorsQueryResult>
     {
         var query = _appContext.Authors.Where(a => !a.IsDeleted).AsNoTracking();
 
+
+        var Countries = _appContext.Locations.Where(c => !c.IsDeleted && c.IsCountry == true && c.Parent == null).AsNoTracking();
+        var Cities = _appContext.Locations.Where(c => !c.IsDeleted && c.IsCountry == false && c.Parent != null).AsNoTracking();
+
         if (!string.IsNullOrEmpty(FirstName))
             query = query.Where(a => a.FirstName.Contains(FirstName));
 
@@ -30,10 +34,16 @@ public class GetAllAuthorsByFiltresQuery : Query<GetAllAuthorsQueryResult>
             query = query.Where(a => a.Gender == Gender);
 
         if (CountryId.HasValue)
+        {
             query = query.Where(a => a.CountryId == CountryId.Value);
+            Countries = Countries.Where(x => x.Id == CountryId.Value);
+        }
 
         if (CityId.HasValue)
+        {
             query = query.Where(a => a.CityId == CityId.Value);
+            Cities = Cities.Where(x => x.Id == CityId.Value);
+        }
 
         if (!string.IsNullOrEmpty(PersonalNumber))
             query = query.Where(a => a.PersonalNumber.Contains(PersonalNumber));
@@ -45,6 +55,13 @@ public class GetAllAuthorsByFiltresQuery : Query<GetAllAuthorsQueryResult>
             query = query.Where(a => a.Email.Contains(Email));
 
         var totalCount = await query.CountAsync();
+
+        if (totalCount == 0) return await Fail("ინფორმაცია ვერ მოიძებნა");
+
+
+
+        var countriesDict = Countries.ToDictionary(x => x.Id, x => x.Name);
+        var citiesDict = Cities.ToDictionary(x => x.Id, x => x.Name);
 
         var result = query
             .OrderBy(a => a.Id)
@@ -60,10 +77,15 @@ public class GetAllAuthorsByFiltresQuery : Query<GetAllAuthorsQueryResult>
                 BirthDate = a.BirthDate,
                 CountryId = a.CountryId,
                 CityId = a.CityId,
+                CityName = citiesDict.GetValueOrDefault(a.CityId),
+                CountryName = citiesDict.GetValueOrDefault(a.CityId),
                 PhoneNumber = a.PhoneNumber,
                 Email = a.Email
             })
             .ToList();
+
+      
+
 
         var response = new GetAllAuthorsQueryResult
         {
@@ -85,6 +107,8 @@ public class AuthorQueryResultItem
     public DateTime BirthDate { get; set; }
     public int CountryId { get; set; }
     public int CityId { get; set; }
+    public string? CountryName { get; set; }
+    public string? CityName { get; set; }
     public string PhoneNumber { get; set; }
     public string Email { get; set; }
 }

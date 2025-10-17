@@ -16,6 +16,10 @@ public class GetAuthorProductInfoByAuthorIdQuery : Query<AuthorProductInfoResult
 
         var bookAuthor = _appContext.BookAuthors.Where(x => x.IsDeleted == false && x.AuthorId == AuthorId).AsNoTracking();
 
+        var location = _appContext.Locations.Where(x => x.Id == author.CityId || x.Id == author.CountryId)
+                                               .AsNoTracking()
+                                               .ToDictionary(x => x.Id, x => x.Name);
+
         var data = new AuthorProductInfoResult
         {
             Id = author.Id,
@@ -28,6 +32,8 @@ public class GetAuthorProductInfoByAuthorIdQuery : Query<AuthorProductInfoResult
             CityId = author.CityId,
             PhoneNumber = author.PhoneNumber,
             Email = author.Email,
+            CityName = location.GetValueOrDefault(author.CityId),
+            CountryName = location.GetValueOrDefault(author.CityId),
             Products = await (from ba in bookAuthor
                               join p in _appContext.Products
                                   on ba.ProductId equals p.Id
@@ -64,6 +70,8 @@ public class AuthorProductInfoResult
     public int CityId { get; set; }
     public string PhoneNumber { get; set; }
     public string Email { get; set; }
+    public string? CountryName { get; set; }
+    public string? CityName { get; set; }
     public List<ProductInfoResult>? Products { get; set; }
 }
 
