@@ -16,7 +16,6 @@ public class DeleteLocationCommand : Command<bool>
         if (location == null)
             return await Fail<bool>("მონაცემი ვერ მოიძებნა");
 
-        // Проверяем, есть ли дочерние записи (например, города у страны)
         if (location.Children?.Any() == true)
             return await Fail<bool>("მონაცემის წაშლა შეუძლებელია, რადგან მას აქვს შვილობილი ელემენტები");
 

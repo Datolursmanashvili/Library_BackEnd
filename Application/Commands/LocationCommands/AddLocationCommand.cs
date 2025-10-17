@@ -55,7 +55,6 @@ public class AddLocationCommand : Command<LocationResult>
             RuleFor(x => x.ParentId)
                 .Must((cmd, parentId) =>
                 {
-                    // Если это страна — ParentId должно быть null
                     return cmd.IsCountry ? parentId == null : parentId > 0;
                 })
                 .WithMessage("ქალაქისთვის აუცილებელია ქვეყნის მითითება, ხოლო ქვეყნისთვის ParentId უნდა იყოს ცარიელი.");

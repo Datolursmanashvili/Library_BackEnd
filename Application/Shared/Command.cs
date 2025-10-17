@@ -87,7 +87,6 @@ public abstract class Command<T> : ResponseHelper
 
 }
 
-// Keep the original non-generic Command for backward compatibility
 public abstract class Command : ResponseHelper
 {
     protected ApplicationDbContext applicationDbContext;

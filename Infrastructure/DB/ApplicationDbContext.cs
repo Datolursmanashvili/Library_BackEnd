@@ -84,8 +84,8 @@ public class ApplicationDbContext : IdentityDbContext<User, ApplicationRole, str
         modelBuilder.Entity<IdentityUserRole<string>>().HasData(
            new IdentityUserRole<string>
            {
-               UserId = "0f8fad5b-d9cb-429f-a165-70867528350e", // ID пользователя
-               RoleId = "2c5e174e-3b0e-446f-86af-483d56fd7210" // ID роли
+               UserId = "0f8fad5b-d9cb-429f-a165-70867528350e", 
+               RoleId = "2c5e174e-3b0e-446f-86af-483d56fd7210" 
            });
 
 

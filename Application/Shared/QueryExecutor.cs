@@ -12,18 +12,16 @@ namespace Application.Shared
         private ApplicationDbContext _appContext;
         private readonly IServiceProvider _serviceProvider;
         private readonly IConfiguration _configuration;
-        //private readonly IHttpContextAccessor _httpContextAccessor;
 
 
         public QueryExecutor(IServiceProvider serviceProvider,
             IConfiguration configuration,
             ApplicationDbContext appContext
-           /* IHttpContextAccessor httpContextAccessor*/)
+           )
         {
             _serviceProvider = serviceProvider;
             _configuration = configuration;
             _appContext = appContext;
-            //_httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<QueryExecutionResult<TResult>> Execute<TQuery, TResult>(TQuery query)
@@ -54,7 +52,6 @@ namespace Application.Shared
             }
             catch (Exception ex)
             {
-                //ExceptionLogger.Logger(_httpContextAccessor.HttpContext, _serviceProvider, ex);
                 return await Task.FromResult(new QueryExecutionResult<TResult>
                 {
                     Success = false,

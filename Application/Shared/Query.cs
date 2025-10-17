@@ -36,7 +36,7 @@ public abstract class Query<TQueryResult> where TQueryResult : class
 ApplicationDbContext appContext,
 IServiceProvider serviceProvider)
     {
-        var user = serviceProvider.GetService<IHttpContextAccessor>().HttpContext.User; // <-- Исправление здесь
+        var user = serviceProvider.GetService<IHttpContextAccessor>().HttpContext.User; 
         _appContext = appContext;
         ServiceProvider = serviceProvider;
         _userManager = ServiceProvider.GetService<UserManager<User>>();
@@ -82,45 +82,4 @@ IServiceProvider serviceProvider)
         return Task.FromResult(result);
     }
 
-    protected string? GetClientIp()
-    {
-        try
-        {
-            var httpContextAccessor = ServiceProvider?.GetService<IHttpContextAccessor>();
-            if (httpContextAccessor?.HttpContext == null)
-            {
-                return null;
-            }
-
-            var context = httpContextAccessor.HttpContext;
-
-            // Извлечение заголовка X-Forwarded-For
-            var forwardedHeader = context.Request.Headers["X-Forwarded-For"].FirstOrDefault();
-            if (!string.IsNullOrEmpty(forwardedHeader))
-            {
-                // Взять первый IP-адрес из цепочки, так как это, вероятно, исходный IP клиента
-                var firstIp = forwardedHeader.Split(',').FirstOrDefault()?.Trim();
-                if (!string.IsNullOrEmpty(firstIp))
-                {
-                    return firstIp;
-                }
-            }
-
-            // Проверка альтернативного заголовка X-Real-IP
-            var realIpHeader = context.Request.Headers["X-Real-IP"].FirstOrDefault();
-            if (!string.IsNullOrEmpty(realIpHeader))
-            {
-                return realIpHeader;
-            }
-
-            // В случае отсутствия заголовков используем IP-адрес соединения
-            return context.Connection.RemoteIpAddress?.ToString();
-        }
-        catch (Exception)
-        {
-
-            return null;
-        }
-
-    }
 }

@@ -13,7 +13,7 @@ public class Location : BaseEntity<int>
     // True = Country, False = City
     public bool IsCountry { get; set; }
 
-    // Для City — ссылка на Country
+    // for City — link to Country
     public int? ParentId { get; set; }
 
     [ForeignKey(nameof(ParentId))]
