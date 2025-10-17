@@ -675,7 +675,31 @@ new Location { Id = 266, Name = "Bern", IsCountry = false, ParentId = 261 },
     new Location { Id = 473, Name = "Sylhet", IsCountry = false, ParentId = 468 }
 };
 
+        var publishers = new List<Publisher>
+            { // --- Book Publishers ---
+        new Publisher { Id = 1, Name = "Penguin Random House" },
+        new Publisher { Id = 2, Name = "HarperCollins" },
+        new Publisher { Id = 3, Name = "Simon & Schuster" },
+        new Publisher { Id = 4, Name = "Macmillan Publishers" },
+        new Publisher { Id = 5, Name = "Hachette Book Group" },
+
+        // --- Magazine Publishers ---
+        new Publisher { Id = 6, Name = "Time Inc." },
+        new Publisher { Id = 7, Name = "Condé Nast" },
+        new Publisher { Id = 8, Name = "Hearst Magazines" },
+        new Publisher { Id = 9, Name = "Meredith Corporation" },
+        new Publisher { Id = 10, Name = "Bauer Media Group" },
+
+        // --- Newspaper Publishers ---
+        new Publisher { Id = 11, Name = "The New York Times Company" },
+        new Publisher { Id = 12, Name = "The Washington Post" },
+        new Publisher { Id = 13, Name = "News Corp" },
+        new Publisher { Id = 14, Name = "The Guardian Media Group" },
+        new Publisher { Id = 15, Name = "Gannett Co., Inc." }
+            };
+
         modelBuilder.Entity<Location>().HasData(locations);
+        modelBuilder.Entity<Publisher>().HasData(publishers);
 
     }
 
