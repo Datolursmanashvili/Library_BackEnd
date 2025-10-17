@@ -53,6 +53,8 @@ public class ProductRepository : BaseRepository, IProductRepository
             existingProduct.ISBN = model.ISBN;
             existingProduct.ReleaseDate = model.ReleaseDate;
             existingProduct.PublisherId = model.PublisherId;
+            existingProduct.Address = model.Address;
+            existingProduct.PageCount= model.PageCount;
 
             _ApplicationDbContext.Products.Update(existingProduct);
             await _ApplicationDbContext.SaveChangesAsync();

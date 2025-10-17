@@ -47,7 +47,9 @@ public class AddProductCommand : Command<ProductCommandResult>
             ProductType = product.ProductType,
             ISBN = product.ISBN,
             ReleaseDate = product.ReleaseDate,
-            PublisherId = product.PublisherId
+            PublisherId = product.PublisherId,
+            Address = product.Address,
+            PageCount = product.PageCount,  
         });
     }
 

@@ -27,10 +27,10 @@ public class Author : BaseEntity<int>
     public DateTime BirthDate { get; set; }  
 
     [Required]
-    public int CountryId { get; set; }  
+    public int CountryId { get; set; }  //
 
     [Required]
-    public int CityId { get; set; }  
+    public int CityId { get; set; }  //
 
     [StringLength(50, MinimumLength = 4)]
     public string PhoneNumber { get; set; }  
