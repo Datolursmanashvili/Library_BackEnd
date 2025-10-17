@@ -1,5 +1,6 @@
 ﻿using Domain.Entities.AuthorEntity.IRepository;
 using Domain.Entities.BookAuthorEntity.IRepository;
+using Domain.Entities.FileEntity.IRepository;
 using Domain.Entities.LocationEntity.IRepository;
 using Domain.Entities.ProductEntity.IRepository;
 using Domain.Entities.PublisherEntity.IRepository;
@@ -24,6 +25,7 @@ public abstract class Query<TQueryResult> where TQueryResult : class
     protected IBookAuthorRepository _bookAuthorRepository;
     protected ILocationRepository _locationRepository;
     protected IPublisherRepository _publisherRepository;
+    protected IFileClassRepository _fileClassRepository;
 
     protected string? UserId;
     protected string? Username;
@@ -48,6 +50,7 @@ IServiceProvider serviceProvider)
         _bookAuthorRepository = serviceProvider.GetService<IBookAuthorRepository>();
         _locationRepository = serviceProvider.GetService<ILocationRepository>();
         _publisherRepository = serviceProvider.GetService<IPublisherRepository>();
+        _fileClassRepository = serviceProvider.GetService<IFileClassRepository>();
 
         if (user.Claims.Any())
         {

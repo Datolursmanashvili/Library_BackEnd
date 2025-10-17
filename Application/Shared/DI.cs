@@ -1,7 +1,9 @@
 ﻿using Domain.Entities.AuthorEntity.IRepository;
 using Domain.Entities.BookAuthorEntity.IRepository;
+using Domain.Entities.FileEntity.IRepository;
 using Domain.Entities.LocationEntity.IRepository;
 using Domain.Entities.ProductEntity.IRepository;
+using Domain.Entities.PublisherEntity.IRepository;
 using Domain.Entities.UserEntity.IRepository;
 using Infrastructure.Repositories;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,5 +21,8 @@ public class DI
         services.AddScoped<IProductRepository, ProductRepository>();
         services.AddScoped<IBookAuthorRepository, BookAuthorRepository>();
         services.AddScoped<ILocationRepository, LocationRepository>();
+        services.AddScoped<IPublisherRepository, PublisherRepository>();
+        services.AddScoped<IFileClassRepository, FileClassRepository>();
+
     }
 }
