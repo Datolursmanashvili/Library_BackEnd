@@ -19,8 +19,6 @@ public class GetAllAuthorsByFiltresQuery : Query<GetAllAuthorsQueryResult>
     public override async Task<QueryExecutionResult<GetAllAuthorsQueryResult>> Execute()
     {
         var query = _appContext.Authors.Where(a => !a.IsDeleted).AsNoTracking();
-
-
         var Countries = _appContext.Locations.Where(c => !c.IsDeleted && c.IsCountry == true && c.Parent == null).AsNoTracking();
         var Cities = _appContext.Locations.Where(c => !c.IsDeleted && c.IsCountry == false && c.Parent != null).AsNoTracking();
 
@@ -59,7 +57,6 @@ public class GetAllAuthorsByFiltresQuery : Query<GetAllAuthorsQueryResult>
         if (totalCount == 0) return await Fail("ინფორმაცია ვერ მოიძებნა");
 
 
-
         var countriesDict = Countries.ToDictionary(x => x.Id, x => x.Name);
         var citiesDict = Cities.ToDictionary(x => x.Id, x => x.Name);
 
@@ -82,10 +79,7 @@ public class GetAllAuthorsByFiltresQuery : Query<GetAllAuthorsQueryResult>
                 PhoneNumber = a.PhoneNumber,
                 Email = a.Email
             })
-            .ToList();
-
-      
-
+            .ToList();     
 
         var response = new GetAllAuthorsQueryResult
         {

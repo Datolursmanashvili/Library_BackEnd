@@ -20,6 +20,7 @@ public class AddProductCommand : Command<ProductCommandResult>
     public string Address { get; set; }
     public override async Task<CommandExecutionResultGeneric<ProductCommandResult>> ExecuteCommandLogicAsync()
     {   
+
         var product = new Product
         {
             Name = Name,
@@ -34,10 +35,14 @@ public class AddProductCommand : Command<ProductCommandResult>
             IsDeleted = false
         };
 
+        if (applicationDbContext.Publishers.FirstOrDefault(x=> x.Id == PublisherId && x.IsDeleted == false).IsNull())
+        {
+            return await Fail<ProductCommandResult>("ასეთი გამომცემლობა არ არსებობს");
+        }
+
         var result = await _productRepository.CreateAsync(product);
         if (!result.Success)
             return await Fail<ProductCommandResult>(result.ErrorMessage);
-
 
         return await Ok(new ProductCommandResult
         {

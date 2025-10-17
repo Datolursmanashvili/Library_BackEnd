@@ -11,10 +11,13 @@ public class GetAuthorProductInfoByAuthorIdQuery : Query<AuthorProductInfoResult
     public override async Task<QueryExecutionResult<AuthorProductInfoResult>> Execute()
     {
         var author = await _appContext.Authors.FirstOrDefaultAsync(x => x.IsDeleted == false && x.Id == AuthorId);
-
-        if (author == null) return await Fail(" ავტორი ვერ მოიძებნა");
+        if (author == null) return await Fail("ავტორი ვერ მოიძებნა");
 
         var bookAuthor = _appContext.BookAuthors.Where(x => x.IsDeleted == false && x.AuthorId == AuthorId).AsNoTracking();
+
+        var publisher = _appContext.Publishers.Where(p => !p.IsDeleted).AsNoTracking();
+
+        var products = _appContext.Products.Where(x => x.IsDeleted == false).AsNoTracking();
 
         var location = _appContext.Locations.Where(x => x.Id == author.CityId || x.Id == author.CountryId)
                                                .AsNoTracking()
@@ -35,8 +38,8 @@ public class GetAuthorProductInfoByAuthorIdQuery : Query<AuthorProductInfoResult
             CityName = location.GetValueOrDefault(author.CityId),
             CountryName = location.GetValueOrDefault(author.CityId),
             Products = await (from ba in bookAuthor
-                              join p in _appContext.Products
-                                  on ba.ProductId equals p.Id
+                              join p in products on ba.ProductId equals p.Id
+                              join pub in publisher on p.PublisherId equals pub.Id
                               where !ba.IsDeleted
                                     && ba.AuthorId == AuthorId
                                     && !p.IsDeleted
@@ -49,7 +52,8 @@ public class GetAuthorProductInfoByAuthorIdQuery : Query<AuthorProductInfoResult
                                   ReleaseDate = p.ReleaseDate,
                                   PublisherId = p.PublisherId,
                                   PageCount = p.PageCount,
-                                  Address = p.Address
+                                  Address = p.Address,
+                                  PublisherName = pub.Name,
                               })
                                .AsNoTracking()
                                .ToListAsync()
@@ -83,6 +87,7 @@ public class ProductInfoResult
     public string ISBN { get; set; }
     public DateTime ReleaseDate { get; set; }
     public int PublisherId { get; set; }
+    public string? PublisherName { get; set; }
     public int PageCount { get; set; }
     public string Address { get; set; }
 }

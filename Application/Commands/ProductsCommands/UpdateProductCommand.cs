@@ -33,6 +33,12 @@ public class UpdateProductCommand : Command<ProductCommandResult>
         product.PageCount = PageCount;
         product.Address = Address;
 
+
+        if (applicationDbContext.Publishers.FirstOrDefault(x => x.Id == PublisherId && x.IsDeleted == false).IsNull())
+        {
+            return await Fail<ProductCommandResult>("ასეთი გამომცემლობა არ არსებობს");
+        }
+
         var result = await _productRepository.UpdateAsync(product);
         if (!result.Success)
             return await Fail<ProductCommandResult>(result.ErrorMessage);

@@ -13,6 +13,10 @@ namespace Application.Queries.ProductQueries
             if (product == null)
                 return await Fail("პროდუქტი ვერ მოიძებნა");
 
+            var publisher = _appContext.Publishers.FirstOrDefault(p => p.Id == product.PublisherId && !p.IsDeleted);
+            if (publisher.IsNull())
+                return await Fail("გამომცემლობა ვერ მოიძებნა");
+
             var result = new ProductQueryResultItem
             {
                 Id = product.Id,
@@ -24,6 +28,7 @@ namespace Application.Queries.ProductQueries
                 PublisherId = product.PublisherId,
                 PageCount = product.PageCount,
                 Address = product.Address,
+                PublisherName = publisher.Name
             };
 
             return await Ok(result);
