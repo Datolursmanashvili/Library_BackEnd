@@ -2,6 +2,7 @@
 using Domain.Entities.BookAuthorEntity;
 using Domain.Entities.LocationEntity;
 using Domain.Entities.ProductEntity;
+using Domain.Entities.PublisherEntity;
 using Domain.Entities.RoleEntity;
 using Domain.Entities.UserEntity;
 using Microsoft.AspNetCore.Identity;
@@ -682,5 +683,6 @@ new Location { Id = 266, Name = "Bern", IsCountry = false, ParentId = 261 },
     public virtual DbSet<Author> Authors { get; set; }
     public virtual DbSet<BookAuthor> BookAuthors { get; set; }
     public virtual DbSet<Location> Locations { get; set; }
+    public virtual DbSet<Publisher> Publishers { get; set; }
 
 }

@@ -2,6 +2,7 @@
 using Domain.Entities.BookAuthorEntity.IRepository;
 using Domain.Entities.LocationEntity.IRepository;
 using Domain.Entities.ProductEntity.IRepository;
+using Domain.Entities.PublisherEntity.IRepository;
 using Domain.Entities.RoleEntity.IRepository;
 using Domain.Entities.UserEntity;
 using Domain.Entities.UserEntity.IRepository;
@@ -26,6 +27,7 @@ public abstract class Command<T> : ResponseHelper
     protected IAuthorRepository _authorRepository;
     protected IBookAuthorRepository _bookAuthorRepository;
     protected ILocationRepository _locationRepository;
+    protected IPublisherRepository _publisherRepository;
 
     public abstract Task<CommandExecutionResultGeneric<T>> ExecuteCommandLogicAsync();
 
@@ -81,6 +83,7 @@ public abstract class Command<T> : ResponseHelper
         _authorRepository = serviceProvider.GetService<IAuthorRepository>();
         _bookAuthorRepository = serviceProvider.GetService<IBookAuthorRepository>();
         _locationRepository = serviceProvider.GetService<ILocationRepository>();
+        _publisherRepository = serviceProvider.GetService<IPublisherRepository>();
         _userManager = serviceProvider.GetService<UserManager<User>>();  // Add this line
 
     }
