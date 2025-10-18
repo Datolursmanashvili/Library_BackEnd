@@ -39,10 +39,10 @@ public class UserController : ControllerBase
 
 
     #region Commands
-    [Route("Registration")]
-    [HttpPost]
-    public async Task<CommandExecutionResultGeneric<UserCommandResult>> Registration([FromBody] RegistrationCommand command) =>
-         await _commandExecutor.Execute(command);
+    //[Route("Registration")]
+    //[HttpPost]
+    //public async Task<CommandExecutionResultGeneric<UserCommandResult>> Registration([FromBody] RegistrationCommand command) =>
+    //     await _commandExecutor.Execute(command);
 
 
     #endregion
