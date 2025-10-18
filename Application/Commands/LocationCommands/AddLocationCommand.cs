@@ -26,6 +26,18 @@ public class AddLocationCommand : Command<LocationResult>
 
         if (IsCountry && ParentId != null) return await Fail<LocationResult>("ქვეყანას არ უნდა ყავდეს მშობელი");
 
+        if (applicationDbContext.Locations.Any(x=> x.Name == location.Name && x.IsCountry == IsCountry))
+        {
+            if (IsCountry)
+            {
+                return await Fail<LocationResult>("ასეთი ქვვეყანა უკვე არსებობს");
+            }
+            else
+            {
+                return await Fail<LocationResult>("ასეთი ქალაქი უკვე არსებობს");
+            }
+        }
+
         var result = await _locationRepository.CreateAsync(location);
 
         if (!result.Success)

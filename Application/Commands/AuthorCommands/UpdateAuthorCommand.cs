@@ -1,6 +1,7 @@
 ﻿using Application.Shared;
 using FluentValidation;
 using FluentValidation.Attributes;
+using Microsoft.EntityFrameworkCore;
 using Shared;
 
 namespace Application.Commands.AuthorCommands;
@@ -22,13 +23,15 @@ public class UpdateAuthorCommand : Command<AuthorCommandResult>
 
     public override async Task<CommandExecutionResultGeneric<AuthorCommandResult>> ExecuteCommandLogicAsync()
     {
-        var validator = new UpdateAuthorCommandValidator();
-        var validationResult = await validator.ValidateAsync(this);
+        var locationResult = await applicationDbContext.Locations
+                                                      .Where(x => x.Id == CountryId || x.Id == CityId)
+                                                      .ToListAsync();
 
-        if (!validationResult.IsValid)
-            return await Fail<AuthorCommandResult>(
-                string.Join("; ", validationResult.Errors.Select(e => e.ErrorMessage))
-            );
+        if (!locationResult.Any(x => x.Id == CountryId))
+            return await Fail<AuthorCommandResult>("ასეთი ქვეყანა არ არსებობს");
+
+        if (!locationResult.Any(x => x.Id == CityId))
+            return await Fail<AuthorCommandResult>("ასეთი ქალაქი არ არსებობს");
 
         var author = await _authorRepository.GetByIdAsync(Id);
         if (author == null)

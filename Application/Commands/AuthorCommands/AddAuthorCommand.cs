@@ -2,6 +2,7 @@
 using Domain.Entities.AuthorEntity;
 using FluentValidation;
 using FluentValidation.Attributes;
+using Microsoft.EntityFrameworkCore;
 using Shared;
 
 namespace Application.Commands.AuthorCommands;
@@ -22,6 +23,15 @@ public class AddAuthorCommand : Command<AuthorCommandResult>
     public string Address { get; set; }
     public override async Task<CommandExecutionResultGeneric<AuthorCommandResult>> ExecuteCommandLogicAsync()
     {
+        var locationResult = await applicationDbContext.Locations
+                                    .Where(x => x.Id == CountryId || x.Id == CityId)
+                                    .ToListAsync();
+
+        if (!locationResult.Any(x => x.Id == CountryId))
+            return await Fail<AuthorCommandResult>("ასეთი ქვეყანა არ არსებობს");
+
+        if (!locationResult.Any(x => x.Id == CityId))
+            return await Fail<AuthorCommandResult>("ასეთი ქალაქი არ არსებობს");
 
         var author = new Author
         {

@@ -28,11 +28,11 @@ public class LocationController : ControllerBase
     public async Task<QueryExecutionResult<List<LocationResult>?>> GetAllCountry([FromQuery] GetAllCountryQuery query) =>
         await _queryExecutor.Execute<GetAllCountryQuery, List<LocationResult>?>(query);
 
-    [Route("GetCountryById")]
+    [Route("GetLocationById")]
     [HttpGet]
     [Authorize(Roles = UserGroups.Admin)]
-    public async Task<QueryExecutionResult<LocationResult?>> GetCountryById([FromQuery] GetCountryByIdQuery query) =>
-        await _queryExecutor.Execute<GetCountryByIdQuery, LocationResult?>(query);
+    public async Task<QueryExecutionResult<LocationResult?>> GetLocationById([FromQuery] GetLocationByIdQuery query) =>
+        await _queryExecutor.Execute<GetLocationByIdQuery, LocationResult?>(query);
 
     [Route("GetAllCityByCountryId")]
     [HttpGet]
@@ -65,14 +65,11 @@ public class LocationController : ControllerBase
     [Route("DeleteLocation/{id}")]
     [HttpDelete]
     [Authorize(Roles = UserGroups.Admin)]
-    public async Task<CommandExecutionResult> DeleteLocation([FromRoute] int id)
+    public async Task<CommandExecutionResultGeneric<DeleteResult>> DeleteLocation([FromRoute] int id)
     {
         var command = new DeleteLocationCommand { Id = id };
         var result = await _commandExecutor.Execute(command);
-
-        return result.Success
-            ? new CommandExecutionResult { Success = true }
-            : new CommandExecutionResult { Success = false, ErrorMessage = "წაშლა ვერ განხორციელდა" };
+        return result;
     }
 
     #endregion

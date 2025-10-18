@@ -29,8 +29,20 @@ public class UpdateLocationCommand : Command<LocationResult>
             return await Fail<LocationResult>(result.ErrorMessage);
 
 
+
         if (IsCountry && ParentId != null) return await Fail<LocationResult>("ქვეყანას არ უნდა ყავდეს მშობელი");
 
+        if (applicationDbContext.Locations.Any(x => x.Name == location.Name && x.IsCountry == IsCountry && x.ParentId == ParentId))
+        {
+            if (IsCountry)
+            {
+                return await Fail<LocationResult>("ასეთი ქვვეყანა უკვე არსებობს");
+            }
+            else
+            {
+                return await Fail<LocationResult>("ასეთი ქალაქი უკვე არსებობს");
+            }
+        }
 
         return await Ok(new LocationResult
         {
