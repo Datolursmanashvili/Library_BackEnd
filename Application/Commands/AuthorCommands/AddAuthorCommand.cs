@@ -111,7 +111,8 @@ public class AddAuthorCommand : Command<AuthorCommandResult>
                 .MaximumLength(50).WithMessage("ტელეფონის ნომერი მაქსიმუმ 50 სიმბოლო შეიძლება იყოს");
 
             RuleFor(x => x.Email)
-                .EmailAddress().WithMessage("მეილის ფორმატი არასწორია");
+        .Must(email => string.IsNullOrWhiteSpace(email) || EmailValidator.IsValidEmail(email) == false)
+        .WithMessage("მეილის ფორმატი არასწორია");
         }
     }
 }

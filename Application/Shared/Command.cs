@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Shared;
+using System.Text.RegularExpressions;
 
 namespace Application.Shared;
 
@@ -38,6 +39,7 @@ public abstract class Command<T> : ResponseHelper
 
     protected string? UserId;
     protected string? Username;
+
 
     public async Task<CommandExecutionResultGeneric<T>> ExecuteAsync()
     {

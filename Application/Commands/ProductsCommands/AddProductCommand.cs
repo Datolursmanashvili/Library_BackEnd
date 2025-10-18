@@ -87,6 +87,15 @@ public class AddProductCommand : Command<ProductCommandResult>
 
             RuleFor(x => x.PublisherId)
                 .GreaterThan(0).WithMessage("გამომცემლობა სავალდებულოა");
+
+            // 🔹 PageCount validation
+            RuleFor(x => x.PageCount)
+                .GreaterThan(0).WithMessage("გვერდების რაოდენობა უნდა იყოს დადებითი რიცხვი")
+                .When(x => x.ProductType == "წიგნი");
+
+            // 🔹 Address validation
+            RuleFor(x => x.Address)
+                .NotEmpty().WithMessage("მისამართი სავალდებულოა");                
         }
     }
 }

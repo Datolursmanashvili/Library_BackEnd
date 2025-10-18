@@ -1,4 +1,5 @@
 ﻿using Application.Commands.BookAuthorCommands;
+using Application.Commands.LocationCommands;
 using Application.Queries.BookAuthorQueries;
 using Application.Shared;
 using Microsoft.AspNetCore.Authorization;
@@ -39,14 +40,11 @@ public class BookAuthorController : ControllerBase
     [Route("Delete/{id}")]
     [HttpDelete]
     [Authorize(Roles = UserGroups.Admin)]
-    public async Task<CommandExecutionResult> Delete([FromRoute] int id)
-    {
-        var result = await _commandExecutor.Execute(new DeleteBookAuthorCommand { Id = id });
-        if (result.Success)
-            return new CommandExecutionResult { Success = true };
+    public async Task<CommandExecutionResultGeneric<DeleteResult>> Delete([FromRoute] int id)
+      => await _commandExecutor.Execute(new DeleteBookAuthorCommand { Id = id });
 
-        return new CommandExecutionResult { Success = false, ErrorMessage = "წაშლა ვერ განხორციელდა" };
-    }
+
+
 
     #endregion
 }

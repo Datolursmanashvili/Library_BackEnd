@@ -1,4 +1,5 @@
-﻿using Application.Commands.PublisherCommands;
+﻿using Application.Commands.LocationCommands;
+using Application.Commands.PublisherCommands;
 using Application.Queries.PublisherQueries;
 using Application.Shared;
 using Microsoft.AspNetCore.Authorization;
@@ -48,14 +49,12 @@ public class PublisherController : ControllerBase
 
     [HttpDelete("DeletePublisher/{id}")]
     [Authorize(Roles = UserGroups.Admin)]
-    public async Task<CommandExecutionResult> DeletePublisher([FromRoute] int id)
+    public async Task<CommandExecutionResultGeneric<DeleteResult>> DeletePublisher([FromRoute] int id)
     {
         var command = new DeletePublisherCommand { Id = id };
         var result = await _commandExecutor.Execute(command);
 
-        return result.Success
-            ? new CommandExecutionResult { Success = true }
-            : new CommandExecutionResult { Success = false, ErrorMessage =  "Deletion failed" };
+      return result;
     }
 
     #endregion
