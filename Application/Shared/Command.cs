@@ -7,6 +7,7 @@ using Domain.Entities.PublisherEntity.IRepository;
 using Domain.Entities.RoleEntity.IRepository;
 using Domain.Entities.UserEntity;
 using Domain.Entities.UserEntity.IRepository;
+using Domain.Shared.RedisModel.IRepository;
 using FluentValidation;
 using FluentValidation.Attributes;
 using Infrastructure.DB;
@@ -15,7 +16,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Shared;
-using System.Text.RegularExpressions;
 
 namespace Application.Shared;
 
@@ -31,6 +31,7 @@ public abstract class Command<T> : ResponseHelper
     protected ILocationRepository _locationRepository;
     protected IPublisherRepository _publisherRepository;
     protected IFileClassRepository _fileClassRepository;
+    protected ICacheService _cacheService;
 
     public abstract Task<CommandExecutionResultGeneric<T>> ExecuteCommandLogicAsync();
 
@@ -89,6 +90,8 @@ public abstract class Command<T> : ResponseHelper
         _locationRepository = serviceProvider.GetService<ILocationRepository>();
         _publisherRepository = serviceProvider.GetService<IPublisherRepository>();
         _fileClassRepository = serviceProvider.GetService<IFileClassRepository>();
+        _cacheService = serviceProvider.GetService<ICacheService>();
+
         _userManager = serviceProvider.GetService<UserManager<User>>(); // Add this line
     }
 

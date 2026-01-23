@@ -6,6 +6,7 @@ using Domain.Entities.ProductEntity.IRepository;
 using Domain.Entities.PublisherEntity.IRepository;
 using Domain.Entities.UserEntity;
 using Domain.Entities.UserEntity.IRepository;
+using Domain.Shared.RedisModel.IRepository;
 using Infrastructure.DB;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -26,6 +27,7 @@ public abstract class Query<TQueryResult> where TQueryResult : class
     protected ILocationRepository _locationRepository;
     protected IPublisherRepository _publisherRepository;
     protected IFileClassRepository _fileClassRepository;
+    protected ICacheService _cacheService;
 
     protected string? UserId;
     protected string? Username;
@@ -40,7 +42,7 @@ public abstract class Query<TQueryResult> where TQueryResult : class
 ApplicationDbContext appContext,
 IServiceProvider serviceProvider)
     {
-        var user = serviceProvider.GetService<IHttpContextAccessor>().HttpContext.User; 
+        var user = serviceProvider.GetService<IHttpContextAccessor>().HttpContext.User;
         _appContext = appContext;
         ServiceProvider = serviceProvider;
         _userManager = ServiceProvider.GetService<UserManager<User>>();
@@ -51,6 +53,7 @@ IServiceProvider serviceProvider)
         _locationRepository = serviceProvider.GetService<ILocationRepository>();
         _publisherRepository = serviceProvider.GetService<IPublisherRepository>();
         _fileClassRepository = serviceProvider.GetService<IFileClassRepository>();
+        _cacheService = serviceProvider.GetService<ICacheService>();
 
         if (user.Claims.Any())
         {
