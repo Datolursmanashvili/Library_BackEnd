@@ -8,7 +8,7 @@ using System.Text;
 
 namespace Infrastructure.Repositories;
 
-public class UserRepository : BaseRepository, IUserRepository
+public class UserRepository : BaseRepository<ApplicationDbContext>, IUserRepository
 {
     private readonly UserManager<User> _userManager;
     private readonly IConfiguration _config;

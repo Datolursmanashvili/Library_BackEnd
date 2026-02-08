@@ -1,13 +1,15 @@
 ﻿using Domain.Shared.BaseModel;
 using Infrastructure.DB;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories;
 
-public class BaseRepository
+public class BaseRepository<TContext>
+    where TContext : DbContext
 {
-    protected ApplicationDbContext _ApplicationDbContext;
+    protected readonly TContext _ApplicationDbContext;
     protected IServiceProvider _ServiceProvider;
-    public BaseRepository(ApplicationDbContext applicationDbContext, IServiceProvider serviceProvider)
+    public BaseRepository(TContext applicationDbContext, IServiceProvider serviceProvider)
     {
         _ApplicationDbContext = applicationDbContext;
         _ServiceProvider = serviceProvider;

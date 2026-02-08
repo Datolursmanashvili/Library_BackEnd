@@ -127,8 +127,6 @@ if (app.Environment.IsDevelopment())
 
 
 app.UseHttpsRedirection();
-
-// --- Authentication должен идти до Authorization ---
 app.UseAuthentication();
 app.UseAuthorization();
 
