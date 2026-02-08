@@ -1,7 +1,5 @@
-﻿using Application.Commands.AuthorCommands;
-using Application.Commands.FileCommands;
+﻿using Application.Commands.FileCommands;
 using Application.Shared;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shared;
 
