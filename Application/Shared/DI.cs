@@ -1,43 +1,8 @@
-﻿//using Domain.Entities.AuthorEntity.IRepository;
-//using Domain.Entities.BookAuthorEntity.IRepository;
-//using Domain.Entities.FileEntity.IRepository;
-//using Domain.Entities.LocationEntity.IRepository;
-//using Domain.Entities.ProductEntity.IRepository;
-//using Domain.Entities.PublisherEntity.IRepository;
-//using Domain.Entities.UserEntity.IRepository;
-//using Infrastructure.Repositories;
-//using Microsoft.Extensions.DependencyInjection;
-
-//namespace Application.Shared;
-
-//public class DI
-//{
-//    public static void DependecyResolver(IServiceCollection services)
-//    {
-//        services.AddScoped<IQueryExecutor, QueryExecutor>();
-//        services.AddScoped<ICommandExecutor, CommandExecutor>();
-//        services.AddScoped<IUserRepository, UserRepository>();
-//        services.AddScoped<IAuthorRepository, AuthorRepository>();
-//        services.AddScoped<IProductRepository, ProductRepository>();
-//        services.AddScoped<IBookAuthorRepository, BookAuthorRepository>();
-//        services.AddScoped<ILocationRepository, LocationRepository>();
-//        services.AddScoped<IPublisherRepository, PublisherRepository>();
-//        services.AddScoped<IFileClassRepository, FileClassRepository>();
-
-//    }
-//}
-
-
-using Domain.Entities.AuthorEntity.IRepository;
-using Domain.Entities.BookAuthorEntity.IRepository;
-using Domain.Entities.FileEntity.IRepository;
-using Domain.Entities.LocationEntity.IRepository;
-using Domain.Entities.ProductEntity.IRepository;
-using Domain.Entities.PublisherEntity.IRepository;
+﻿using Domain.Entities.FileEntity.IRepository;
 using Domain.Entities.UserEntity.IRepository;
+using Domain.Shared.RedisModel;
 using Domain.Shared.RedisModel.IRepository;
 using Infrastructure.Caching;
-using Infrastructure.Configuration;
 using Infrastructure.Repositories;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -53,7 +18,7 @@ public static class DI
     {
         RegisterExecutors(services);
         RegisterRepositories(services);
-        RegisterRedis(services, configuration);
+        //RegisterRedis(services, configuration);
     }
 
     private static void RegisterExecutors(IServiceCollection services)
@@ -65,11 +30,6 @@ public static class DI
     private static void RegisterRepositories(IServiceCollection services)
     {
         services.AddScoped<IUserRepository, UserRepository>();
-        services.AddScoped<IAuthorRepository, AuthorRepository>();
-        services.AddScoped<IProductRepository, ProductRepository>();
-        services.AddScoped<IBookAuthorRepository, BookAuthorRepository>();
-        services.AddScoped<ILocationRepository, LocationRepository>();
-        services.AddScoped<IPublisherRepository, PublisherRepository>();
         services.AddScoped<IFileClassRepository, FileClassRepository>();
     }
 

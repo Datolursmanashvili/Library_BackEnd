@@ -10,7 +10,7 @@ namespace Infrastructure.Repositories;
 
 public class UserRepository : BaseRepository, IUserRepository
 {
-    UserManager<User> _userManager;
+    private readonly UserManager<User> _userManager;
     private readonly IConfiguration _config;
 
 
