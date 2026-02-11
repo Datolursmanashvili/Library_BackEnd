@@ -1,6 +1,6 @@
 ﻿namespace Shared;
 
-public class CommandExecutionResult
+public class RepositoryExecutionResult
 {
     public string? ResultId { get; set; }
     public string? FileUrl { get; set; }

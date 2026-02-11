@@ -6,8 +6,8 @@ namespace Domain.Shared.BaseModel.IBaseRepository
     {
         Task<TEntity?> GetByIdAsync(int id);
         Task<List<TEntity>?> GetAllAsync();
-        Task<CommandExecutionResult> CreateAsync(TEntity model);
-        Task<CommandExecutionResult> UpdateAsync(TEntity model);
-        Task<CommandExecutionResult> DeleteAsync(int id);
+        Task<RepositoryExecutionResult> CreateAsync(TEntity model);
+        Task<RepositoryExecutionResult> UpdateAsync(TEntity model);
+        Task<RepositoryExecutionResult> DeleteAsync(int id);
     }
 }

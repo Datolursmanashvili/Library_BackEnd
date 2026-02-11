@@ -90,7 +90,7 @@ public abstract class Command : ResponseHelper
     protected IRoleRepository RoleRepository;
 
 
-    public abstract Task<CommandExecutionResult> ExecuteAsync();
+    public abstract Task<RepositoryExecutionResult> ExecuteAsync();
 
     protected IUserRepository userRepository;
     protected UserManager<User> _userManager;

@@ -33,7 +33,7 @@ public class FileClassRepository : IFileClassRepository
     }
 
 
-    public async Task<(CommandExecutionResult result, string filePath)> SaveFile(string folderName, string base64String, string fileName, string ext, bool? skipCheck)
+    public async Task<(RepositoryExecutionResult result, string filePath)> SaveFile(string folderName, string base64String, string fileName, string ext, bool? skipCheck)
     {
         //var directoryPath =;
         fileName = Regex.Replace(fileName, @"[<>:""/\\|?*]", "_");
@@ -46,7 +46,7 @@ public class FileClassRepository : IFileClassRepository
             if (ExtList.FirstOrDefault(x => x == ext).IsNull())
             //if (ext != "png" && ext != "jpg" && ext != "docx" && ext != "pdf" && ext != "xlsx")
             {
-                return (new CommandExecutionResult { Success = false, ErrorMessage = "File format error" }, null);
+                return (new RepositoryExecutionResult { Success = false, ErrorMessage = "File format error" }, null);
 
             }
         }
@@ -64,15 +64,15 @@ public class FileClassRepository : IFileClassRepository
             File.WriteAllBytes(filePath, Convert.FromBase64String(base64String));
             string ApiAddress = _config.GetSection("SendVerifyMailLinks:ApiAddress")?.Value.ToString();
 
-            return (new CommandExecutionResult { Success = true }, ApiAddress + fileAddres);
+            return (new RepositoryExecutionResult { Success = true }, ApiAddress + fileAddres);
         }
         catch (Exception ex)
         {
-            return (new CommandExecutionResult { Success = false, ErrorMessage = $"File Write error " }, null);
+            return (new RepositoryExecutionResult { Success = false, ErrorMessage = $"File Write error " }, null);
         }
     }
 
-    public async Task<(CommandExecutionResult result, string filePath)> SaveFile(string FilePathForDb, string hostingEnvironmentPath, string folderName, string base64String, string fileName, string ext, string OldFileName = null)
+    public async Task<(RepositoryExecutionResult result, string filePath)> SaveFile(string FilePathForDb, string hostingEnvironmentPath, string folderName, string base64String, string fileName, string ext, string OldFileName = null)
     {
         //var directoryPath =; //"\\Files\\Employees"
         try
@@ -83,7 +83,7 @@ public class FileClassRepository : IFileClassRepository
             if (ExtList.FirstOrDefault(x => x == ext).IsNull())
 
             {
-                return (new CommandExecutionResult { Success = false, ErrorMessage = "File format error" }, null);
+                return (new RepositoryExecutionResult { Success = false, ErrorMessage = "File format error" }, null);
             }
 
             if (!Directory.Exists(FullFolderPath))
@@ -101,11 +101,11 @@ public class FileClassRepository : IFileClassRepository
             string ApiAddress = _config.GetSection("SendVerifyMailLinks:ApiAddress").Value?.ToString() ?? throw new Exception("ApiAddress  is null ");
             File.WriteAllBytes(filePath, Convert.FromBase64String(base64String));
 
-            return (new CommandExecutionResult { Success = true }, ApiAddress + fileAddres);
+            return (new RepositoryExecutionResult { Success = true }, ApiAddress + fileAddres);
         }
         catch (Exception ex)
         {
-            return (new CommandExecutionResult { Success = false, ErrorMessage = $"File Write error" }, null);
+            return (new RepositoryExecutionResult { Success = false, ErrorMessage = $"File Write error" }, null);
         }
     }
 
@@ -254,23 +254,23 @@ public class FileClassRepository : IFileClassRepository
 
 
 
-    public async Task<CommandExecutionResult> DeleteFile(string filePath)
+    public async Task<RepositoryExecutionResult> DeleteFile(string filePath)
     {
         try
         {
             if (File.Exists(filePath))
             {
                 File.Delete(filePath);
-                return new CommandExecutionResult { Success = true };
+                return new RepositoryExecutionResult { Success = true };
             }
             else
             {
-                return new CommandExecutionResult { Success = false, ErrorMessage = "File not found" };
+                return new RepositoryExecutionResult { Success = false, ErrorMessage = "File not found" };
             }
         }
         catch (Exception ex)
         {
-            return new CommandExecutionResult { Success = false, ErrorMessage = $"File deletion error \n{ex.Message}" };
+            return new RepositoryExecutionResult { Success = false, ErrorMessage = $"File deletion error \n{ex.Message}" };
         }
     }
 

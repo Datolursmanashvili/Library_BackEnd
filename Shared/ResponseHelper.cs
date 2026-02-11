@@ -3,9 +3,9 @@
 public class ResponseHelper
 {
     // Original methods for non-generic CommandExecutionResult
-    protected Task<CommandExecutionResult> Fail(string? errorMessage)
+    protected Task<RepositoryExecutionResult> Fail(string? errorMessage)
     {
-        var result = new CommandExecutionResult
+        var result = new RepositoryExecutionResult
         {
             Success = false
         };
@@ -19,9 +19,9 @@ public class ResponseHelper
         return Task.FromResult(result);
     }
 
-    protected Task<CommandExecutionResult> Ok(string resultId, long? listCount = null)
+    protected Task<RepositoryExecutionResult> Ok(string resultId, long? listCount = null)
     {
-        var result = new CommandExecutionResult
+        var result = new RepositoryExecutionResult
         {
             ResultId = resultId,
             Success = true,

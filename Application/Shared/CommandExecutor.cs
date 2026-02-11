@@ -23,14 +23,14 @@ public class CommandExecutor : ICommandExecutor
         _configuration = configuration;
     }
 
-    public async Task<CommandExecutionResult> Execute(Command command)
+    public async Task<RepositoryExecutionResult> Execute(Command command)
     {
         try
         {
             var validationResult = Validate(command);
             if (!validationResult.IsValid)
             {
-                return new CommandExecutionResult
+                return new RepositoryExecutionResult
                 {
                     Success = false,
                     Errors = validationResult.Errors.Select(error => new Error { Message = error.ErrorMessage, Code = 0 })
@@ -45,7 +45,7 @@ public class CommandExecutor : ICommandExecutor
         }
         catch (Exception ex)
         {
-            return new CommandExecutionResult
+            return new RepositoryExecutionResult
             {
                 Success = false,
                 Errors = new List<Error>
