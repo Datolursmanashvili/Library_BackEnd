@@ -63,6 +63,7 @@ try
 
     // Add services to the container.
     builder.Services.AddHttpClient();
+    builder.Services.AddHttpContextAccessor();
     builder.Configuration.AddJsonFile("appsettings.json");
     var connectionString = SqlTrust(builder.Configuration.GetConnectionString("DefaultConnection"));
 
@@ -73,8 +74,9 @@ try
         .AddEntityFrameworkStores<ApplicationDbContext>()
         .AddDefaultTokenProviders();
 
-    var jwtSecret = builder.Configuration["JwtSettings:SecretKey"] ??
-                    "B374A26A71490437AA024E4FADD5B497FDFF1A8EA6FF12F6FB65AF2720B59CCF"; // Используем текущий ключ как запасной вариант
+    var jwtSecret = builder.Configuration["JwtSettings:SecretKey"];
+    if (string.IsNullOrWhiteSpace(jwtSecret))
+        throw new InvalidOperationException("JwtSettings:SecretKey must be set in configuration.");
 
     builder.Services.AddAuthentication(options =>
     {
@@ -107,10 +109,28 @@ try
     {
         c.SwaggerDoc("v1", new OpenApiInfo
         {
-            Title = "TemplateBE API",
+            Title = "Library API",
             Version = "v1",
-            Description = "API TemplateBE",
+            Description =
+                "Backend API for the library application. Authenticated endpoints require a JWT in the Authorization header (Bearer scheme). " +
+                "Use User/Login to obtain a token. Responses use a common envelope (success flag, HTTP status code, errors, and payload in data) returned with the matching HTTP status.",
+            Contact = new OpenApiContact
+            {
+                Name = "Library API",
+            },
         });
+
+        try
+        {
+            foreach (var xmlPath in Directory.GetFiles(AppContext.BaseDirectory, "*.xml", SearchOption.TopDirectoryOnly))
+                c.IncludeXmlComments(xmlPath, includeControllerXmlComments: true);
+        }
+        catch
+        {
+            // XML docs are optional if referenced projects were not built yet
+        }
+
+        c.CustomSchemaIds(type => type.FullName?.Replace("+", ".") ?? type.Name);
 
         // Security Definition
         c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
@@ -157,7 +177,6 @@ try
         try
         {
             var context = services.GetRequiredService<ApplicationDbContext>();
-            context.Database.EnsureCreated();
             if (context.Database.GetPendingMigrations().Any())
             {
                 context.Database.Migrate();

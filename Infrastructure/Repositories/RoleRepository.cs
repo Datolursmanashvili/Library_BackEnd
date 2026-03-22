@@ -1,4 +1,4 @@
-﻿using Domain.Entities.RoleEntity;
+using Domain.Entities.RoleEntity;
 using Domain.Entities.RoleEntity.IRepository;
 using Infrastructure.DB;
 using Microsoft.AspNetCore.Identity;
@@ -23,7 +23,7 @@ public class RoleRepository : BaseRepository<ApplicationDbContext>, IRoleReposit
         {
             if (_ApplicationDbContext.Roles.Any(x => x.Name == role.Name && !x.IsDeleted))
             {
-                return new RepositoryExecutionResult() { Success = false, ErrorMessage = "როლის_დასახელება_უკვე_გამოყენებულია " };//"როლის დასახელება უკვე გამოყენებულია"
+                return new RepositoryExecutionResult() { Success = false, Code = 409, ErrorMessage = "როლის_დასახელება_უკვე_გამოყენებულია " };//"როლის დასახელება უკვე გამოყენებულია"
             }
 
             if (_ApplicationDbContext.Roles.Any(x => x.Name == role.Name && x.IsDeleted))
@@ -46,6 +46,7 @@ public class RoleRepository : BaseRepository<ApplicationDbContext>, IRoleReposit
             return new RepositoryExecutionResult()
             {
                 Success = false,
+                Code = 500,
                 ErrorMessage = ex.Message
             };
         }
@@ -83,6 +84,7 @@ public class RoleRepository : BaseRepository<ApplicationDbContext>, IRoleReposit
             return new RepositoryExecutionResult()
             {
                 Success = false,
+                Code = 500,
                 ErrorMessage = ex.Message
             };
         }
@@ -104,6 +106,7 @@ public class RoleRepository : BaseRepository<ApplicationDbContext>, IRoleReposit
             return new RepositoryExecutionResult()
             {
                 Success = false,
+                Code = 500,
                 ErrorMessage = ex.Message
             };
         }
@@ -126,6 +129,7 @@ public class RoleRepository : BaseRepository<ApplicationDbContext>, IRoleReposit
             return new RepositoryExecutionResult()
             {
                 Success = false,
+                Code = 500,
                 ErrorMessage = ex.Message
             };
         }

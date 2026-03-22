@@ -1,16 +1,15 @@
-﻿using Domain.Entities.FileEntity.IRepository;
+using Domain.Entities.FileEntity.IRepository;
 using ICSharpCode.SharpZipLib.Zip;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Shared;
 using System.Text.RegularExpressions;
-using System.Web.Mvc;
 
 namespace Infrastructure.Repositories;
 
 public class FileClassRepository : IFileClassRepository
 {
-    private readonly IHostingEnvironment _hostingEnvironment;
+    private readonly IHostEnvironment _hostEnvironment;
     private readonly IConfiguration _config;
     private List<string> ExtList = new List<string>() {
     "pdf", "doc", "docx", "xls", "xlsx", "csv",
@@ -18,9 +17,9 @@ public class FileClassRepository : IFileClassRepository
     "md", "markdown",
     "png", "jpg", "jpeg", "gif", "bmp", "tiff", "svg", "webp", "ico", "heic",
     "zip", "rar", "7z", "tar", "gz", "bz2", "xz"};
-    public FileClassRepository(IHostingEnvironment hostingEnvironment, IConfiguration config)
+    public FileClassRepository(IHostEnvironment hostEnvironment, IConfiguration config)
     {
-        _hostingEnvironment = hostingEnvironment;
+        _hostEnvironment = hostEnvironment;
         _config = config;
     }
 
@@ -28,7 +27,7 @@ public class FileClassRepository : IFileClassRepository
     {
         string fileDir = "\\Files\\";
 
-        DirectoryInfo dir = new DirectoryInfo(_hostingEnvironment.ContentRootPath + fileDir);
+        DirectoryInfo dir = new DirectoryInfo(_hostEnvironment.ContentRootPath + fileDir);
         return dir.FullName;
     }
 
@@ -77,7 +76,7 @@ public class FileClassRepository : IFileClassRepository
         //var directoryPath =; //"\\Files\\Employees"
         try
         {
-            string FullFolderPath = Path.Combine(new DirectoryInfo(_hostingEnvironment.ContentRootPath + hostingEnvironmentPath)?.FullName ?? throw new Exception("_hostingEnvironment fullname is null "), folderName);
+            string FullFolderPath = Path.Combine(new DirectoryInfo(_hostEnvironment.ContentRootPath + hostingEnvironmentPath)?.FullName ?? throw new Exception("_hostingEnvironment fullname is null "), folderName);
 
             //if (ext != "png" && ext != "jpg" && ext != "docx" && ext != "pdf" && ext != "xlsx" && ext != "jpeg" && ext != "pptx" && ext != "ppt")
             if (ExtList.FirstOrDefault(x => x == ext).IsNull())
@@ -111,7 +110,7 @@ public class FileClassRepository : IFileClassRepository
 
     public async Task<byte[]> GenerateAndDownloadZipAsync(List<string> FileUrls)
     {
-        var SaveFilePath = new DirectoryInfo(_hostingEnvironment.ContentRootPath).FullName + "Files\\ZipFiles";
+        var SaveFilePath = new DirectoryInfo(_hostEnvironment.ContentRootPath).FullName + "Files\\ZipFiles";
 
         if (!Directory.Exists(SaveFilePath))
         {
@@ -184,7 +183,7 @@ public class FileClassRepository : IFileClassRepository
 
 
 
-    public async Task<FileResult> GenerateAndDownloadZipAsync(List<string> FileUrls, string SaveFilePath)
+    public async Task<FileDownloadPayload> GenerateAndDownloadZipAsync(List<string> FileUrls, string SaveFilePath)
     {
         if (!Directory.Exists(SaveFilePath))
         {
@@ -246,9 +245,11 @@ public class FileClassRepository : IFileClassRepository
             throw new Exception("Error creating the zip file.");
         }
 
-        return new FileContentResult(finalResult, "application/zip")
+        return new FileDownloadPayload
         {
-            FileDownloadName = filename
+            Content = finalResult,
+            DownloadFileName = filename,
+            ContentType = "application/zip"
         };
     }
 

@@ -1,6 +1,7 @@
-﻿using FluentValidation;
+using FluentValidation;
 using FluentValidation.Results;
 using Infrastructure.DB;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Shared;
 using System.Reflection;
@@ -33,7 +34,8 @@ public class CommandExecutor : ICommandExecutor
                 return new RepositoryExecutionResult
                 {
                     Success = false,
-                    Errors = validationResult.Errors.Select(error => new Error { Message = error.ErrorMessage, Code = 0 })
+                    Code = StatusCodes.Status400BadRequest,
+                    Errors = validationResult.Errors.Select(error => new Error { Message = error.ErrorMessage, Code = StatusCodes.Status400BadRequest })
                 };
             }
 
@@ -48,12 +50,13 @@ public class CommandExecutor : ICommandExecutor
             return new RepositoryExecutionResult
             {
                 Success = false,
+                Code = StatusCodes.Status500InternalServerError,
                 Errors = new List<Error>
                 {
                     new Error
                     {
-                        Code = 0,
-                        Message = ex.ToString() // TEMP:
+                        Code = StatusCodes.Status500InternalServerError,
+                        Message = ex.ToString()
                     }
                 }
             };
@@ -70,7 +73,8 @@ public class CommandExecutor : ICommandExecutor
                 return new CommandExecutionResultGeneric<T>
                 {
                     Success = false,
-                    Errors = validationResult.Errors.Select(error => new Error { Message = error.ErrorMessage, Code = 0 })
+                    HttpStatusCode = StatusCodes.Status400BadRequest,
+                    Errors = validationResult.Errors.Select(error => new Error { Message = error.ErrorMessage, Code = StatusCodes.Status400BadRequest })
                 };
             }
 
@@ -85,12 +89,13 @@ public class CommandExecutor : ICommandExecutor
             return new CommandExecutionResultGeneric<T>
             {
                 Success = false,
+                HttpStatusCode = StatusCodes.Status500InternalServerError,
                 Errors = new List<Error>
                 {
                     new Error
                     {
-                        Code = 0,
-                        Message = ex.ToString() // TEMP:
+                        Code = StatusCodes.Status500InternalServerError,
+                        Message = ex.ToString()
                     }
                 }
             };

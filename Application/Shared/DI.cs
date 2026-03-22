@@ -1,12 +1,15 @@
-﻿using Domain.Entities.FileEntity.IRepository;
+using Domain.Entities.FileEntity.IRepository;
+using Domain.Entities.RoleEntity.IRepository;
 using Domain.Entities.UserEntity.IRepository;
 using Domain.Shared.RedisModel;
 using Domain.Shared.RedisModel.IRepository;
+using FluentValidation;
 using Infrastructure.Caching;
 using Infrastructure.Repositories;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using StackExchange.Redis;
+using System.Reflection;
 
 namespace Application.Shared;
 
@@ -16,6 +19,7 @@ public static class DI
         IServiceCollection services,
         IConfiguration configuration)
     {
+        services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
         RegisterExecutors(services);
         RegisterRepositories(services);
         //RegisterRedis(services, configuration);
@@ -31,6 +35,7 @@ public static class DI
     {
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IFileClassRepository, FileClassRepository>();
+        services.AddScoped<IRoleRepository, RoleRepository>();
     }
 
     private static void RegisterRedis(

@@ -1,10 +1,8 @@
-﻿using Domain.Entities.FileEntity.IRepository;
+using Domain.Entities.FileEntity.IRepository;
 using Domain.Entities.RoleEntity.IRepository;
 using Domain.Entities.UserEntity;
 using Domain.Entities.UserEntity.IRepository;
 using Domain.Shared.RedisModel.IRepository;
-using FluentValidation;
-using FluentValidation.Attributes;
 using Infrastructure.DB;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -32,32 +30,8 @@ public abstract class Command<T> : ResponseHelper
     protected string? Username;
 
 
-    public async Task<CommandExecutionResultGeneric<T>> ExecuteAsync()
-    {
-        var validatorAttribute = (ValidatorAttribute)Attribute.GetCustomAttribute(
-            this.GetType(), typeof(ValidatorAttribute));
-
-        if (validatorAttribute?.ValidatorType != null)
-        {
-            var validatorInstance = Activator.CreateInstance(validatorAttribute.ValidatorType);
-
-            if (validatorInstance is IValidator validator)
-            {
-                var validationResult = await validator.ValidateAsync(
-                    new ValidationContext<object>(this)
-                );
-
-                if (!validationResult.IsValid)
-                {
-                    return await Fail<T>(
-                        string.Join("; ", validationResult.Errors.Select(e => e.ErrorMessage))
-                    );
-                }
-            }
-        }
-
-        return await ExecuteCommandLogicAsync();
-    }
+    public Task<CommandExecutionResultGeneric<T>> ExecuteAsync() =>
+        ExecuteCommandLogicAsync();
 
     public void Resolve(ApplicationDbContext applicationContext, IServiceProvider serviceProvider, IConfiguration configuration)
     {
@@ -73,11 +47,12 @@ public abstract class Command<T> : ResponseHelper
             UserId = user.Claims.First(i => i.Type == "UserId").Value;
         }
 
-        userRepository = serviceProvider.GetService<IUserRepository>();
-        _fileClassRepository = serviceProvider.GetService<IFileClassRepository>();
+        userRepository = serviceProvider.GetRequiredService<IUserRepository>();
+        _fileClassRepository = serviceProvider.GetRequiredService<IFileClassRepository>();
         _cacheService = serviceProvider.GetService<ICacheService>();
+        RoleRepository = serviceProvider.GetRequiredService<IRoleRepository>();
 
-        _userManager = serviceProvider.GetService<UserManager<User>>(); // Add this line
+        _userManager = serviceProvider.GetRequiredService<UserManager<User>>();
     }
 
 }
@@ -110,9 +85,9 @@ public abstract class Command : ResponseHelper
             Username = user.Claims.First(i => i.Type == "UserName").Value;
             UserId = user.Claims.First(i => i.Type == "UserId").Value;
         }
-        userRepository = serviceProvider.GetService<IUserRepository>();
+        userRepository = serviceProvider.GetRequiredService<IUserRepository>();
+        RoleRepository = serviceProvider.GetRequiredService<IRoleRepository>();
 
-        _userManager = serviceProvider.GetService<UserManager<User>>();  // Add this line
-
+        _userManager = serviceProvider.GetRequiredService<UserManager<User>>();
     }
 }

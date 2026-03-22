@@ -1,4 +1,4 @@
-﻿using Domain.Entities.FileEntity.IRepository;
+using Domain.Entities.FileEntity.IRepository;
 using Domain.Entities.UserEntity;
 using Domain.Entities.UserEntity.IRepository;
 using Domain.Shared.RedisModel.IRepository;
@@ -10,6 +10,10 @@ using Shared;
 
 namespace Application.Shared;
 
+/// <summary>
+/// Base class for read-side use cases executed via <see cref="IQueryExecutor"/>.
+/// </summary>
+/// <typeparam name="TQueryResult">DTO type placed in the query result <c>Data</c> property.</typeparam>
 public abstract class Query<TQueryResult> where TQueryResult : class
 {
     protected ApplicationDbContext _appContext;
@@ -26,9 +30,12 @@ public abstract class Query<TQueryResult> where TQueryResult : class
     {
         get { return _appContext; }
     }
+    /// <summary>Runs the query and returns a <c>QueryExecutionResult&lt;TQueryResult&gt;</c> envelope.</summary>
+    /// <returns>Success or failure with messages and HTTP hint.</returns>
     public abstract Task<QueryExecutionResult<TQueryResult>> Execute();
 
 
+    /// <summary>Wires EF context, current user claims, and scoped services.</summary>
     public void Resolve(
 ApplicationDbContext appContext,
 IServiceProvider serviceProvider)
@@ -48,28 +55,34 @@ IServiceProvider serviceProvider)
         }
     }
 
-    protected Task<QueryExecutionResult<TQueryResult>> Ok(TQueryResult data)
+    protected Task<QueryExecutionResult<TQueryResult>> Ok(TQueryResult data, int httpStatusCode = StatusCodes.Status200OK)
     {
         var result = new QueryExecutionResult<TQueryResult>
         {
             Data = data,
-            Success = true
+            Success = true,
+            HttpStatusCode = httpStatusCode
         };
 
         return Task.FromResult(result);
     }
-    protected Task<QueryExecutionResult<TQueryResult>> Fail(params string[] errorMessages)
+
+    protected Task<QueryExecutionResult<TQueryResult>> Fail(params string[] errorMessages) =>
+        Fail(StatusCodes.Status400BadRequest, errorMessages);
+
+    protected Task<QueryExecutionResult<TQueryResult>> Fail(int httpStatusCode, params string[] errorMessages)
     {
         var result = new QueryExecutionResult<TQueryResult>
         {
-            Success = false
+            Success = false,
+            HttpStatusCode = httpStatusCode
         };
 
-        if (errorMessages != null)
+        if (errorMessages != null && errorMessages.Length > 0)
         {
             result.Errors = errorMessages.Select(x => new Error
             {
-                Code = 0,
+                Code = httpStatusCode,
                 Message = x
             });
         }

@@ -1,8 +1,7 @@
-﻿using Application.Shared;
+using Application.Shared;
 using Domain.Entities.RoleEntity;
 using FluentValidation;
-using FluentValidation.Attributes;
-using Infrastructure.Repositories;
+using Microsoft.AspNetCore.Http;
 using Shared;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +9,6 @@ using System.Threading.Tasks;
 
 namespace Application.Commands.RoleCommands
 {
-    [Validator(typeof(EditRolePermissionsCommandValidation))]
     public class EditRolePermissionsCommand : Command
     {
         public string? Id { get; set; }
@@ -81,7 +79,7 @@ namespace Application.Commands.RoleCommands
             #endregion
             if (role.IsNull())
             {
-                return await Fail("ასეთი_როლი_ვერ_მოიძებნა");//"ასეთი როლი ვერ მოიძებნა
+                return await Fail(StatusCodes.Status404NotFound, "ასეთი_როლი_ვერ_მოიძებნა");//"ასეთი როლი ვერ მოიძებნა
             }
 
             return await RoleRepository.EditRolePermissions(role, RolePermissions);

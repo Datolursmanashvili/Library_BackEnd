@@ -1,5 +1,6 @@
-﻿using Application.Shared;
+using Application.Shared;
 using Domain.Entities.RoleEntity;
+using Microsoft.AspNetCore.Http;
 using Shared;
 
 namespace Application.Queries.RoleQueries
@@ -8,7 +9,7 @@ namespace Application.Queries.RoleQueries
     {
         public override async Task<QueryExecutionResult<EmployeePermissionsQueryResult>> Execute()
         {
-            if (UserId.IsNull()) return await Fail("Anauthorized");
+            if (UserId.IsNull()) return await Fail(StatusCodes.Status401Unauthorized, "Anauthorized");
 
             List<Permissions> permissions = new List<Permissions>();
 

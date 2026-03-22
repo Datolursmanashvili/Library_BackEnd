@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 
 namespace Domain.Entities.RoleEntity;
@@ -20,7 +20,11 @@ public class ApplicationRole : IdentityRole<string>
 
     public bool IsDeleted { get; set; } = false;
 }
+/// <summary>
+/// Permission flags assignable to a role (extend as needed).
+/// </summary>
 public enum Permissions
 {
+    /// <summary>Full access / super permission.</summary>
     All = 1,
 }

@@ -1,11 +1,10 @@
-﻿using Application.Shared;
+using Application.Shared;
 using FluentValidation;
-using FluentValidation.Attributes;
+using Microsoft.AspNetCore.Http;
 using Shared;
 
 namespace Application.Commands.RoleCommands
 {
-    [Validator(typeof(DeleteRoleCommandValidation))]
     public class DeleteRoleCommand : Command
     {
         public string Id { get; set; }
@@ -16,12 +15,12 @@ namespace Application.Commands.RoleCommands
 
             if (applicationDbContext.UserRoles.Any(x => x.RoleId == Id))
             {
-                return await Fail("როლის_წაშლა_ვერ_მოხერხდა_იუზერია_მიმაგრებული");//როლის წაშლა ვერ მოხერხდა,იუზერია მიმაგრებული
+                return await Fail(StatusCodes.Status409Conflict, "როლის_წაშლა_ვერ_მოხერხდა_იუზერია_მიმაგრებული");//როლის წაშლა ვერ მოხერხდა,იუზერია მიმაგრებული
             }
 
             if (role.IsNull())
             {
-                return await Fail("როლი_ვერ_მოიძებნა");//როლი ვერ მოიძებნა"
+                return await Fail(StatusCodes.Status404NotFound, "როლი_ვერ_მოიძებნა");//როლი ვერ მოიძებნა"
             }
 
             return await RoleRepository.DeleteRole(role);

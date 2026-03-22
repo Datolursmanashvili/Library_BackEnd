@@ -1,19 +1,29 @@
-﻿using Application.Shared;
+using Application.Shared;
+using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 using Shared;
 
 namespace Application.Queries.UserQuery;
 
-public class GetAllUserQuery : Query<GetAllUserQueryResult>
+/// <summary>
+/// Paginated list of application users. Inherits paging: 1-based <c>Page</c> and <c>PageSize</c> query parameters.
+/// </summary>
+public class GetAllUserQuery : PagedQuery<GetAllUserQueryResult>
 {
-    public int PageSize { get; set; }
-    public int Page { get; set; }
+    /// <inheritdoc />
     public override async Task<QueryExecutionResult<GetAllUserQueryResult>> Execute()
     {
+        var (skip, take, page, pageSize) = GetNormalizedPaging();
 
-        var users = _appContext.Users.AsQueryable();
-        var totalcount = users.Count();
+        var baseQuery = _appContext.Users.AsNoTracking().OrderBy(x => x.UserName);
+        var totalCount = await baseQuery.CountAsync();
 
-        var result = users?.Select(x => new UserQueryResultItem()
+        var pageEntities = await baseQuery
+            .Skip(skip)
+            .Take(take)
+            .ToListAsync();
+
+        var result = pageEntities.Select(x => new UserQueryResultItem
         {
             Id = x.Id,
             Email = x.Email,
@@ -23,36 +33,65 @@ public class GetAllUserQuery : Query<GetAllUserQueryResult>
             Phone = x.PhoneNumber,
             Username = x.UserName,
             DepartmentId = x.DepartmentId,
-
             BirthDate = x.BirthDate,
+        }).ToList();
 
-        })?.Skip(Page * PageSize)
-           .Take(PageSize)
-           .ToList();
-
-
-        var response = new GetAllUserQueryResult();
-        response.Result = result;
-        response.TotalCount = totalcount;
+        var response = new GetAllUserQueryResult
+        {
+            Result = result,
+            TotalCount = totalCount,
+            Page = page,
+            PageSize = pageSize,
+        };
         return await Ok(response);
     }
 }
 
+/// <summary>FluentValidation rules for <see cref="GetAllUserQuery"/>.</summary>
+public class GetAllUserQueryValidator : AbstractValidator<GetAllUserQuery>
+{
+    /// <summary>Creates the validator.</summary>
+    public GetAllUserQueryValidator()
+    {
+        RuleFor(x => x.Page).GreaterThanOrEqualTo(1);
+        RuleFor(x => x.PageSize).InclusiveBetween(1, Pagination.MaxPageSize);
+    }
+}
+
+/// <summary>Single user row in <see cref="GetAllUserQueryResult"/>.</summary>
 public class UserQueryResultItem
 {
+    /// <summary>Identity user id.</summary>
     public string Id { get; set; }
+
+    /// <summary>Login username.</summary>
     public string Username { get; set; }
+
+    /// <summary>Email address.</summary>
     public string Email { get; set; }
+
+    /// <summary>Personal number (decrypted for display).</summary>
     public string PNumber { get; set; }
+
+    /// <summary>First name.</summary>
     public string FirstName { get; set; }
+
+    /// <summary>Last name.</summary>
     public string LastName { get; set; }
+
+    /// <summary>Phone number.</summary>
     public string Phone { get; set; }
+
+    /// <summary>Department id.</summary>
     public int DepartmentId { get; set; }
+
+    /// <summary>Date of birth.</summary>
     public DateTime BirthDate { get; set; }
 }
 
-public class GetAllUserQueryResult
+/// <summary>Paginated user list response.</summary>
+public class GetAllUserQueryResult : PagedResultBase
 {
+    /// <summary>Users for the current page.</summary>
     public List<UserQueryResultItem>? Result { get; set; }
-    public int? TotalCount { get; set; }
 }

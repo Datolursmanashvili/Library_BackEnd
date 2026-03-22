@@ -1,9 +1,9 @@
-﻿using FluentValidation.Results;
+using FluentValidation;
+using FluentValidation.Results;
 using Infrastructure.DB;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Shared;
-using System.Reflection;
-using FluentValidation.Attributes;
 
 namespace Application.Shared
 {
@@ -30,16 +30,17 @@ namespace Application.Shared
         {
             try
             {
-                var validationResult = Validate(query);
+                var validationResult = Validate<TQuery, TResult>(query);
                 if (!validationResult.IsValid)
                 {
                     return new QueryExecutionResult<TResult>
                     {
                         Success = false,
+                        HttpStatusCode = StatusCodes.Status400BadRequest,
                         Errors = validationResult.Errors.Select(error => new Error
                         {
                             Message = error.ErrorMessage,
-                            Code = 0
+                            Code = StatusCodes.Status400BadRequest
                         })
                     };
                 }
@@ -55,26 +56,29 @@ namespace Application.Shared
                 return await Task.FromResult(new QueryExecutionResult<TResult>
                 {
                     Success = false,
+                    HttpStatusCode = StatusCodes.Status500InternalServerError,
                     Errors = new List<Error>
                     {
                         new Error
                         {
-                            Code = 0,
-                            Message = ex.ToString() // TEMP:
+                            Code = StatusCodes.Status500InternalServerError,
+                            Message = ex.ToString()
                         }
                     }
                 });
             }
 
         }
-        public ValidationResult Validate<T>(Query<T> execution) where T : class
+        public ValidationResult Validate<TQuery, TResult>(TQuery execution)
+            where TQuery : Query<TResult>
+            where TResult : class
         {
-            var validatorAttribute = execution.GetType().GetCustomAttribute<ValidatorAttribute>(true);
-            if (validatorAttribute != null)
+            var validatorType = typeof(IValidator<>).MakeGenericType(execution.GetType());
+            var validator = (IValidator?)_serviceProvider.GetService(validatorType);
+
+            if (validator != null)
             {
-                var instance = (dynamic)Activator.CreateInstance(validatorAttribute.ValidatorType);
-                var modelState = instance.Validate((dynamic)execution);
-                return modelState;
+                return validator.Validate(new ValidationContext<object>(execution));
             }
 
             return new ValidationResult();

@@ -1,4 +1,4 @@
-﻿using Domain.Entities.UserEntity;
+using Domain.Entities.UserEntity;
 using Domain.Entities.UserEntity.IRepository;
 using Infrastructure.DB;
 using Microsoft.AspNetCore.Identity;
@@ -28,7 +28,7 @@ public class UserRepository : BaseRepository<ApplicationDbContext>, IUserReposit
 
         if (user == null)
         {
-            return new RepositoryExecutionResult() { Success = false, ErrorMessage = "User not found" };
+            return new RepositoryExecutionResult() { Success = false, Code = 404, ErrorMessage = "User not found" };
         }
 
         var result = await _userManager.UpdateAsync(user);
@@ -39,7 +39,7 @@ public class UserRepository : BaseRepository<ApplicationDbContext>, IUserReposit
         }
         else
         {
-            return new RepositoryExecutionResult() { Success = false, ErrorMessage = string.Join(", ", result.Errors) };
+            return new RepositoryExecutionResult() { Success = false, Code = 400, ErrorMessage = string.Join(", ", result.Errors) };
         }
     }
 
@@ -73,23 +73,23 @@ public class UserRepository : BaseRepository<ApplicationDbContext>, IUserReposit
 
         if (user == null)
         {
-            return new RepositoryExecutionResult() { Success = false, ErrorMessage = "Invalid user object" };
+            return new RepositoryExecutionResult() { Success = false, Code = 400, ErrorMessage = "Invalid user object" };
         }
 
         if (_ApplicationDbContext.Users.Any(x => x.PNumber == user.PNumber || x.PNumber == hashPrivateNumber))
         {
-            return new RepositoryExecutionResult() { Success = false, ErrorMessage = "ასეთი პირადი ნომერი უკვე არსებობს " };
+            return new RepositoryExecutionResult() { Success = false, Code = 409, ErrorMessage = "ასეთი პირადი ნომერი უკვე არსებობს " };
 
         }
 
         if (await _userManager.FindByEmailAsync(user.Email) != null)
         {
-            return new RepositoryExecutionResult() { Success = false, ErrorMessage = $"მომხმარებლის მეილი {user.Email} უკვე დაკავებულია" };
+            return new RepositoryExecutionResult() { Success = false, Code = 409, ErrorMessage = $"მომხმარებლის მეილი {user.Email} უკვე დაკავებულია" };
         }
 
         if (_ApplicationDbContext.Users.FirstOrDefault(x => x.IsActive && (x.Email == user.Email || x.UserName == user.UserName)).IsNotNull())
         {
-            return new RepositoryExecutionResult() { Success = false, ErrorMessage = "მომხმარებლის სახელი უკვე დაკავებულია" };
+            return new RepositoryExecutionResult() { Success = false, Code = 409, ErrorMessage = "მომხმარებლის სახელი უკვე დაკავებულია" };
         }
 
 
@@ -97,7 +97,7 @@ public class UserRepository : BaseRepository<ApplicationDbContext>, IUserReposit
         var NewRole = _ApplicationDbContext.Roles.FirstOrDefault(x => x.Name == RoleName);
         if (NewRole.IsNull())
         {
-            return new RepositoryExecutionResult() { Success = false, ErrorMessage = "Invalid Role Name" };
+            return new RepositoryExecutionResult() { Success = false, Code = 400, ErrorMessage = "Invalid Role Name" };
         }
 
         user.PNumber = hashPrivateNumber;
@@ -105,7 +105,7 @@ public class UserRepository : BaseRepository<ApplicationDbContext>, IUserReposit
         {
             if (_userManager == null)
             {
-                return new RepositoryExecutionResult() { Success = false, ErrorMessage = "User Manager is not initialized" };
+                return new RepositoryExecutionResult() { Success = false, Code = 500, ErrorMessage = "User Manager is not initialized" };
             }
             user.Id = Guid.NewGuid().ToString();
             string hashedNewPassword = _userManager.PasswordHasher.HashPassword(user, user.PasswordHash);
@@ -116,7 +116,7 @@ public class UserRepository : BaseRepository<ApplicationDbContext>, IUserReposit
 
             if (result.Succeeded == false)
             {
-                return new RepositoryExecutionResult() { Success = false, ErrorMessage = result.Errors.ToString() };
+                return new RepositoryExecutionResult() { Success = false, Code = 400, ErrorMessage = result.Errors.ToString() };
             }
 
 
@@ -124,7 +124,7 @@ public class UserRepository : BaseRepository<ApplicationDbContext>, IUserReposit
             var roleResult = await _userManager.AddToRoleAsync(_ApplicationDbContext.Users.First(x => x.Email == user.Email), NewRole.Name);
             if (roleResult.Succeeded == false)
             {
-                return new RepositoryExecutionResult() { Success = false, ErrorMessage = roleResult.Errors.ToString() };
+                return new RepositoryExecutionResult() { Success = false, Code = 400, ErrorMessage = roleResult.Errors.ToString() };
             }
 
             await _ApplicationDbContext.SaveChangesAsync();
@@ -136,6 +136,7 @@ public class UserRepository : BaseRepository<ApplicationDbContext>, IUserReposit
             return new RepositoryExecutionResult()
             {
                 Success = false,
+                Code = 500,
                 ErrorMessage = ex.Message
             };
         }
@@ -149,7 +150,7 @@ public class UserRepository : BaseRepository<ApplicationDbContext>, IUserReposit
 
         if (employe.IsNull())
         {
-            return new RepositoryExecutionResult() { Success = false, ErrorMessage = "User not found" };
+            return new RepositoryExecutionResult() { Success = false, Code = 404, ErrorMessage = "User not found" };
         }
 
         try
@@ -170,6 +171,7 @@ public class UserRepository : BaseRepository<ApplicationDbContext>, IUserReposit
             return new RepositoryExecutionResult()
             {
                 Success = false,
+                Code = 500,
                 ErrorMessage = ex.Message
             };
         }
@@ -181,7 +183,7 @@ public class UserRepository : BaseRepository<ApplicationDbContext>, IUserReposit
 
         if (user == null)
         {
-            return new RepositoryExecutionResult() { Success = false, ErrorMessage = "User not found" };
+            return new RepositoryExecutionResult() { Success = false, Code = 404, ErrorMessage = "User not found" };
         }
 
         user.IsActive = false;
@@ -193,7 +195,7 @@ public class UserRepository : BaseRepository<ApplicationDbContext>, IUserReposit
         }
         else
         {
-            return new RepositoryExecutionResult() { Success = false, ErrorMessage = string.Join(", ", result.Errors) };
+            return new RepositoryExecutionResult() { Success = false, Code = 400, ErrorMessage = string.Join(", ", result.Errors) };
         }
     }
 
@@ -221,7 +223,7 @@ public class UserRepository : BaseRepository<ApplicationDbContext>, IUserReposit
         catch (Exception ex)
         {
 
-            return new RepositoryExecutionResult { Success = false, ErrorMessage = String.Format("Error: {0}", ex.Message) };
+            return new RepositoryExecutionResult { Success = false, Code = 500, ErrorMessage = String.Format("Error: {0}", ex.Message) };
         }
 
     }

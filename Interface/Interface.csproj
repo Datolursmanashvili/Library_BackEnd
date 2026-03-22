@@ -4,21 +4,23 @@
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);1591</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.10" />
-    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.2" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.2">
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.10" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.10">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.2" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.2">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.10" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.10">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Serilog.AspNetCore" Version="8.0.3" />
+    <PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
     <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
     <PackageReference Include="Serilog.Sinks.MSSqlServer" Version="6.6.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="7.3.1" />
@@ -28,5 +30,16 @@
     <ProjectReference Include="..\Application\Application.csproj" />
     <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
   </ItemGroup>
+
+  <Target Name="CopyReferencedXmlDocumentation" AfterTargets="Build">
+    <PropertyGroup>
+      <_AppXml>$(MSBuildThisFileDirectory)..\Application\bin\$(Configuration)\$(TargetFramework)\Application.xml</_AppXml>
+      <_SharedXml>$(MSBuildThisFileDirectory)..\Shared\bin\$(Configuration)\$(TargetFramework)\Shared.xml</_SharedXml>
+      <_DomainXml>$(MSBuildThisFileDirectory)..\Domain\bin\$(Configuration)\$(TargetFramework)\Domain.xml</_DomainXml>
+    </PropertyGroup>
+    <Copy SourceFiles="$(_AppXml)" DestinationFolder="$(OutputPath)" SkipUnchangedFiles="true" Condition="Exists('$(_AppXml)')" />
+    <Copy SourceFiles="$(_SharedXml)" DestinationFolder="$(OutputPath)" SkipUnchangedFiles="true" Condition="Exists('$(_SharedXml)')" />
+    <Copy SourceFiles="$(_DomainXml)" DestinationFolder="$(OutputPath)" SkipUnchangedFiles="true" Condition="Exists('$(_DomainXml)')" />
+  </Target>
 
 </Project>
