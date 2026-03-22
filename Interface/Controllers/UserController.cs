@@ -1,6 +1,7 @@
-﻿using Application.Commands.UserCommands;
+using Application.Commands.UserCommands;
 using Application.Queries.UserQuery;
 using Application.Shared;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shared;
 using static Application.Queries.UserQuery.LoginQuery;
@@ -24,6 +25,7 @@ public class UserController : ControllerBase
 
     #region Queries
 
+    [AllowAnonymous]
     [Route("Login")]
     [HttpGet]
     public async Task<QueryExecutionResult<LoginQueryResult>> Login([FromQuery] LoginQuery query) =>
